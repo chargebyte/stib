@@ -1,0 +1,1 @@
+openssh-server openssh-server/permit-root-login boolean true
