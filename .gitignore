@@ -2,3 +2,4 @@ debian-rootfs/debcache
 debian-rootfs/rootfs
 rootfs
 tools/ptgen/ptgen
+images
