@@ -8,8 +8,8 @@ ROOTFSCHUNKSIZE:=$(shell echo $$((64 * 1024 * 1024)))
 PATH:=./tools/ptgen:./tools/fsl-imx-uuc:$(PATH)
 export PATH ROOTFSSIZE
 
-.PHONY: requirements
-requirements:
+.PHONY: jessie-requirements
+jessie-requirements:
 	sudo apt-get install -y build-essential make patch multistrap curl bc
 	sudo sh -c 'echo "deb http://emdebian.org/tools/debian/ jessie main" > /etc/apt/sources.list.d/crosstools.list'
 	curl http://emdebian.org/tools/debian/emdebian-toolchain-archive.key | sudo apt-key add -
@@ -30,12 +30,14 @@ tools-clean:
 	$(MAKE) -C tools/fsl-imx-uuc clean
 	$(MAKE) -C tools/ptgen clean
 
+.PHONY: u-boot uboot
 u-boot uboot: u-boot/u-boot.sb
 
 u-boot/u-boot.sb:
 	$(MAKE) -C u-boot $(BOARD)_defconfig CROSS_COMPILE="$(CROSS_COMPILE)"
 	$(MAKE) -C u-boot -j $(JOBS) u-boot.sb CROSS_COMPILE="$(CROSS_COMPILE)"
 
+.PHONY: linux
 linux: linux/arch/arm/boot/zImage
 
 linux/arch/arm/boot/zImage:
@@ -70,6 +72,7 @@ install: clean-rootfs
 	sudo sh -c 'echo "$(BOARD)" > rootfs-tmp/etc/hostname'
 	sudo chown 0:0 -R rootfs-tmp
 	sudo cp -a rootfs-tmp/* rootfs
+	sudo rm -rf rootfs-tmp
 
 clean-rootfs:
 	sudo rm -rf rootfs rootfs-tmp
@@ -92,5 +95,5 @@ disk-image: images/sdcard.img
 	rm -f images/sdcard.img.*
 	split -b $(ROOTFSCHUNKSIZE) --numeric-suffixes=1 images/sdcard.img images/sdcard.img.
 
-images/sdcard.img:
-	sh tools/gen_sdcard_ext4.sh images/sdcard.img u-boot/u-boot.sb images/rootfs.img $(ROOTFSSIZE)
+images/sdcard.img: images/rootfs.img
+	sh tools/gen_sdcard_ext4.sh images/sdcard.img u-boot/u-boot.sb images/rootfs.img $$(($(ROOTFSSIZE) / (1024 * 1024)))
