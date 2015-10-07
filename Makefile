@@ -17,6 +17,16 @@ jessie-requirements:
 	sudo apt-get update
 	sudo apt-get install -y crossbuild-essential-armel
 
+trusty-requirements:
+	sudo apt-get install -y build-essential make patch multistrap bc
+	sudo dpkg --add-architecture armel
+	sudo apt-get update
+	sudo apt-get install -y gcc-arm-linux-gnueabi g++-arm-linux-gnueabi
+
+prepare:
+	git submodule init
+	git submodule update
+
 tools: tools/fsl-imx-uuc/sdimage tools/ptgen/ptgen
 
 tools/fsl-imx-uuc/sdimage: tools/fsl-imx-uuc/sdimage.c tools/fsl-imx-uuc/Makefile
