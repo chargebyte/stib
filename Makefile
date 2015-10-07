@@ -19,9 +19,11 @@ jessie-requirements:
 
 trusty-requirements:
 	sudo apt-get install -y build-essential make patch multistrap bc
-	sudo dpkg --add-architecture armel
-	sudo apt-get update
 	sudo apt-get install -y gcc-arm-linux-gnueabi g++-arm-linux-gnueabi
+	sudo sh -c 'if [ `dpkg -s multistrap | grep Version | cut -d: -f2` = "2.2.0ubuntu1" ]; then \
+	        cp /usr/sbin/multistrap /usr/sbin/multistrap.orig; \
+	        sed -i -e "s/-y \$$forceyes install/-y install/" /usr/sbin/multistrap; \
+	     fi'
 
 prepare:
 	git submodule init
