@@ -98,7 +98,7 @@ images/rootfs.img:
 	rm -f images/rootfs.img
 	mkdir -p images
 	dd if=/dev/zero of=images/rootfs.img seek=$$(($(ROOTFSSIZE) - 1)) bs=1 count=1
-	sudo mkfs.ext4 images/rootfs.img
+	sudo mkfs.ext4 -F images/rootfs.img
 	sudo mount images/rootfs.img /mnt -o loop
 	sudo cp -a rootfs/* /mnt
 	sudo umount /mnt
