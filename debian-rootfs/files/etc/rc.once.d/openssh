@@ -1,0 +1,9 @@
+#!/bin/sh
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# Remove old ssh host keys
+rm -f /etc/ssh/ssh_host_* > /dev/null 2>&1
+
+# Reconfigure OpenSSH Server
+dpkg-reconfigure openssh-server

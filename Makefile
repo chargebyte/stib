@@ -10,7 +10,7 @@ export PATH ROOTFSSIZE
 
 .PHONY: jessie-requirements
 jessie-requirements:
-	sudo apt-get install -y build-essential make patch multistrap curl bc
+	sudo apt-get install -y build-essential make patch multistrap curl bc qemu-user-static
 	sudo sh -c 'echo "deb http://emdebian.org/tools/debian/ jessie main" > /etc/apt/sources.list.d/crosstools.list'
 	curl http://emdebian.org/tools/debian/emdebian-toolchain-archive.key | sudo apt-key add -
 	sudo dpkg --add-architecture armel
@@ -18,7 +18,7 @@ jessie-requirements:
 	sudo apt-get install -y crossbuild-essential-armel
 
 trusty-requirements:
-	sudo apt-get install -y build-essential make patch multistrap bc
+	sudo apt-get install -y build-essential make patch multistrap bc qemu-user-static
 	sudo apt-get install -y gcc-arm-linux-gnueabi g++-arm-linux-gnueabi
 	sudo sh -c 'if [ `dpkg -s multistrap | grep Version | cut -d: -f2` = "2.2.0ubuntu1" ]; then \
 	        cp /usr/sbin/multistrap /usr/sbin/multistrap.orig; \
@@ -81,7 +81,10 @@ install: clean-rootfs
 	sudo chmod 0644 rootfs/boot/*
 	sudo mv rootfs/sbin/init rootfs/sbin/init.orig
 	sudo cp -a debian-rootfs/files rootfs-tmp/
-	sudo sh -c 'echo "$(BOARD)" > rootfs-tmp/etc/hostname'
+	sudo cp -a debian-rootfs/files-duckbill rootfs-tmp/
+	sudo sh -c 'if [ -d debian-rootfs/files-$(BOARD) ]; then cp -a debian-rootfs/files-$(BOARD) rootfs-tmp/; fi'
+	sudo mkdir -p rootfs-tmp/usr/bin/
+	sudo cp -a /usr/bin/qemu-arm-static rootfs-tmp/usr/bin/
 	sudo chown 0:0 -R rootfs-tmp
 	sudo cp -a rootfs-tmp/* rootfs
 	sudo rm -rf rootfs-tmp

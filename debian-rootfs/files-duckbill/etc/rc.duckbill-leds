@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# include our shell led library
+. /lib/led.sh
+
+# determine the device/model we are running on
+model="$(cat /proc/device-tree/model)"
+
+# common stuff (upstream kernel use the second name, so be upwards-compatible)
+led_off "duckbill:red"
+led_off "duckbill:red:status"
+
+# force exit code since above might return error due to failing test
+exit 0

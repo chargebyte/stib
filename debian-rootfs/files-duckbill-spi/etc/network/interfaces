@@ -1,0 +1,21 @@
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# Set up interfaces manually, avoiding conflicts with, e.g., network manager
+iface eth0 inet manual
+
+iface eth1 inet manual
+
+# Bridge setup
+auto br0
+iface br0 inet static
+	bridge_ports eth0 eth1
+	bridge_maxwait 2
+	address 192.168.55.3
+	netmask 255.255.255.0
+	pre-up /root/ifotpmac eth1 00:01:87 HW_OCOTP_CUST1
+	post-up /sbin/brctl setfd br0 0
