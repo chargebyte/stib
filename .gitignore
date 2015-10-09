@@ -3,3 +3,4 @@ debian-rootfs/rootfs
 rootfs
 tools/ptgen/ptgen
 images
+linux-modules
