@@ -2,6 +2,8 @@ BOARD ?= duckbill
 CROSS_COMPILE ?= arm-linux-gnueabi-
 JOBS ?= $(shell cat /proc/cpuinfo | grep processor | wc -l)
 
+UBOOT_BOARD ?= duckbill
+
 ROOTFSSIZE:=$(shell echo $$((512 * 1024 * 1024)))
 ROOTFSCHUNKSIZE:=$(shell echo $$((64 * 1024 * 1024)))
 
@@ -46,7 +48,7 @@ tools-clean:
 u-boot uboot: u-boot/u-boot.sb
 
 u-boot/u-boot.sb:
-	$(MAKE) -C u-boot $(BOARD)_defconfig CROSS_COMPILE="$(CROSS_COMPILE)"
+	$(MAKE) -C u-boot $(UBOOT_BOARD)_defconfig CROSS_COMPILE="$(CROSS_COMPILE)"
 	$(MAKE) -C u-boot -j $(JOBS) u-boot.sb CROSS_COMPILE="$(CROSS_COMPILE)"
 
 .PHONY: linux
@@ -93,13 +95,14 @@ install: clean-rootfs
 	sudo cp -a debian-rootfs/files/* rootfs-tmp/
 	sudo cp -a debian-rootfs/files-duckbill/* rootfs-tmp/
 	sudo sh -c 'if [ -d debian-rootfs/files-$(BOARD) ]; then cp -a debian-rootfs/files-$(BOARD)/* rootfs-tmp/; fi'
-
-	# run dpkg-configure stuff inside the chroot
 	sudo mkdir -p rootfs-tmp/usr/bin/
 	sudo cp -a /usr/bin/qemu-arm-static rootfs-tmp/usr/bin/
 	sudo chown 0:0 -R rootfs-tmp
+	sudo mv rootfs/sbin/init rootfs/sbin/init.orig
 	sudo cp -a rootfs-tmp/* rootfs
 	sudo rm -rf rootfs-tmp
+
+	# run dpkg-configure stuff inside the chroot
 	sudo mount -t proc - rootfs/proc
 	sudo chroot rootfs /init-chroot.sh
 	# workarounds to stop some daemons

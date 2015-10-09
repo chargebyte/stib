@@ -1,0 +1,17 @@
+#!/bin/sh
+
+export LC_ALL=C LANGUAGE=C LANG=C
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+cat <<EOF | fdisk /dev/mmcblk0
+p
+d
+2
+n
+p
+2
+6144
+
+p
+w
+EOF
