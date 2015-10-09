@@ -54,7 +54,9 @@ linux: linux/arch/arm/boot/zImage
 
 linux/arch/arm/boot/zImage:
 	$(MAKE) -C linux $(BOARD)_defconfig ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)"
-	$(MAKE) -C linux -j $(JOBS) ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)"
+	$(MAKE) -C linux -j $(JOBS) ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" \
+	        INSTALL_MOD_PATH="$(shell pwd)/linux-modules" zImage modules modules_install
+	rm -f linux-modules/lib/modules/*/build linux-modules/lib/modules/*/source
 
 dtbs:
 	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" dtbs
@@ -73,21 +75,40 @@ rootfs:
 
 install: clean-rootfs
 	sudo mkdir -p rootfs
-	sudo cp -av debian-rootfs/rootfs/* rootfs/
+	sudo cp -a debian-rootfs/rootfs/* rootfs/
+
+	# linux kernel and device tree
 	sudo mkdir -p rootfs/boot
 	sudo cp -av linux/arch/arm/boot/zImage rootfs/boot/
 	sudo cp -av linux/arch/arm/boot/dts/imx28-$(BOARD).dtb rootfs/boot/
+	sudo cp -av linux-modules/lib/modules rootfs/lib
 	sudo chown 0:0 rootfs/boot/*
 	sudo chmod 0644 rootfs/boot/*
-	sudo mv rootfs/sbin/init rootfs/sbin/init.orig
-	sudo cp -a debian-rootfs/files rootfs-tmp/
-	sudo cp -a debian-rootfs/files-duckbill rootfs-tmp/
-	sudo sh -c 'if [ -d debian-rootfs/files-$(BOARD) ]; then cp -a debian-rootfs/files-$(BOARD) rootfs-tmp/; fi'
+	sudo chown 0:0 -R rootfs/lib/modules
+	sudo sh -c 'find rootfs/lib/modules -type d -exec chmod 0755 {} \;'
+	sudo sh -c 'find rootfs/lib/modules -type f -exec chmod 0644 {} \;'
+
+	# fold in root fs overlay
+	sudo mkdir rootfs-tmp
+	sudo cp -a debian-rootfs/files/* rootfs-tmp/
+	sudo cp -a debian-rootfs/files-duckbill/* rootfs-tmp/
+	sudo sh -c 'if [ -d debian-rootfs/files-$(BOARD) ]; then cp -a debian-rootfs/files-$(BOARD)/* rootfs-tmp/; fi'
+
+	# run dpkg-configure stuff inside the chroot
 	sudo mkdir -p rootfs-tmp/usr/bin/
 	sudo cp -a /usr/bin/qemu-arm-static rootfs-tmp/usr/bin/
 	sudo chown 0:0 -R rootfs-tmp
 	sudo cp -a rootfs-tmp/* rootfs
 	sudo rm -rf rootfs-tmp
+	sudo mount -t proc - rootfs/proc
+	sudo chroot rootfs /init-chroot.sh
+	# workarounds to stop some daemons
+	sudo kill -9 $$(ps ax | grep [q]emu-arm-static | awk '{ print $$1 }')
+	sudo umount rootfs/proc
+
+	# cleanup
+	sudo rm -f rootfs/init-chroot.sh
+	sudo rm -rf rootfs/var/cache/apt/*
 
 clean-rootfs:
 	sudo rm -rf rootfs rootfs-tmp
