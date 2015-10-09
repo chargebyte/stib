@@ -4,7 +4,7 @@ JOBS ?= $(shell cat /proc/cpuinfo | grep processor | wc -l)
 
 UBOOT_BOARD ?= duckbill
 
-ROOTFSSIZE:=$(shell echo $$((512 * 1024 * 1024)))
+ROOTFSSIZE:=$(shell echo $$((320 * 1024 * 1024)))
 ROOTFSCHUNKSIZE:=$(shell echo $$((64 * 1024 * 1024)))
 
 PATH:=./tools/ptgen:./tools/fsl-imx-uuc:$(PATH)
@@ -131,8 +131,8 @@ images/rootfs.img:
 	sudo umount /mnt
 
 disk-image: images/sdcard.img
-	rm -f images/sdcard.img.*
-	split -b $(ROOTFSCHUNKSIZE) --numeric-suffixes=1 images/sdcard.img images/sdcard.img.
+	rm -f images/emmc.img.*
+	split -b $(ROOTFSCHUNKSIZE) --numeric-suffixes=0 images/sdcard.img images/emmc.img.
 
 images/sdcard.img: images/rootfs.img
 	sh tools/gen_sdcard_ext4.sh images/sdcard.img u-boot/u-boot.sb images/rootfs.img $$(($(ROOTFSSIZE) / (1024 * 1024)))
