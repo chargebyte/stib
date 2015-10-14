@@ -116,10 +116,7 @@ install: clean-rootfs
 clean-rootfs:
 	sudo rm -rf rootfs rootfs-tmp
 
-.PHONY: rootfs-image disk-image
-
 rootfs-image: images/rootfs.img
-
 .PHONY: images/rootfs.img
 images/rootfs.img:
 	rm -f images/rootfs.img
@@ -130,9 +127,10 @@ images/rootfs.img:
 	sudo cp -a rootfs/* /mnt
 	sudo umount /mnt
 
-disk-image: images/sdcard.img
-	rm -f images/emmc.img.*
-	split -b $(ROOTFSCHUNKSIZE) --numeric-suffixes=0 images/sdcard.img images/emmc.img.
-
 images/sdcard.img: images/rootfs.img
 	sh tools/gen_sdcard_ext4.sh images/sdcard.img u-boot/u-boot.sb images/rootfs.img $$(($(ROOTFSSIZE) / (1024 * 1024)))
+
+disk-image: images/sdcard.img
+	rm -f images/emmc.img.*
+	split -b $(ROOTFSCHUNKSIZE) --numeric-suffixes=1 images/sdcard.img images/emmc.img.
+	gzip -9 images/emmc.img.*
