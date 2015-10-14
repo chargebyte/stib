@@ -12,7 +12,7 @@ export PATH ROOTFSSIZE
 
 .PHONY: jessie-requirements
 jessie-requirements:
-	sudo apt-get install -y build-essential make patch multistrap curl bc qemu-user-static
+	sudo apt-get install -y build-essential make patch multistrap curl bc binfmt-support qemu-user-static
 	sudo sh -c 'echo "deb http://emdebian.org/tools/debian/ jessie main" > /etc/apt/sources.list.d/crosstools.list'
 	curl http://emdebian.org/tools/debian/emdebian-toolchain-archive.key | sudo apt-key add -
 	sudo dpkg --add-architecture armel
@@ -20,7 +20,7 @@ jessie-requirements:
 	sudo apt-get install -y crossbuild-essential-armel
 
 trusty-requirements:
-	sudo apt-get install -y build-essential make patch multistrap bc qemu-user-static
+	sudo apt-get install -y build-essential make patch multistrap bc binfmt-support qemu-user-static
 	sudo apt-get install -y gcc-arm-linux-gnueabi g++-arm-linux-gnueabi
 	sudo sh -c 'if [ `dpkg -s multistrap | grep Version | cut -d: -f2` = "2.2.0ubuntu1" ]; then \
 	        cp /usr/sbin/multistrap /usr/sbin/multistrap.orig; \
@@ -56,8 +56,9 @@ linux: linux/arch/arm/boot/zImage
 
 linux/arch/arm/boot/zImage:
 	$(MAKE) -C linux $(BOARD)_defconfig ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)"
-	$(MAKE) -C linux -j $(JOBS) ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" \
-	        INSTALL_MOD_PATH="$(shell pwd)/linux-modules" zImage modules modules_install
+	$(MAKE) -C linux -j $(JOBS) ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" zImage modules
+	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" \
+	        INSTALL_MOD_PATH="$(shell pwd)/linux-modules" modules_install
 	rm -f linux-modules/lib/modules/*/build linux-modules/lib/modules/*/source
 
 dtbs:
