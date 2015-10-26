@@ -55,7 +55,8 @@ u-boot/u-boot.sb:
 linux: linux/arch/arm/boot/zImage
 
 linux/arch/arm/boot/zImage:
-	$(MAKE) -C linux $(BOARD)_defconfig ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)"
+	cat linux-configs/$(BOARD) > linux/.config
+	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" olddefconfig
 	$(MAKE) -C linux -j $(JOBS) ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" zImage modules
 	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" \
 	        INSTALL_MOD_PATH="$(shell pwd)/linux-modules" modules_install
