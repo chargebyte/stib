@@ -55,7 +55,7 @@ u-boot/u-boot.sb:
 linux: linux/arch/arm/boot/zImage
 
 linux/arch/arm/boot/zImage:
-	cat linux-configs/$(PRODUCT) > linux/.config
+	cat linux-configs/duckbill > linux/.config
 	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" olddefconfig
 	$(MAKE) -C linux -j $(JOBS) ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" zImage modules
 	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" \
@@ -66,10 +66,10 @@ linux-clean:
 	rm -f linux/arch/arm/boot/zImage
 
 linux-menuconfig:
-	cat linux-configs/$(PRODUCT) > linux/.config
+	cat linux-configs/duckbill > linux/.config
 	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" menuconfig
 	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" savedefconfig
-	cat linux/defconfig > linux-configs/$(PRODUCT)
+	cat linux/defconfig > linux-configs/duckbill
 	rm linux/defconfig
 
 dtbs:
