@@ -22,6 +22,6 @@ fi
 
 [ -x /etc/rc.duckbill-leds ] && /etc/rc.duckbill-leds
 
-start-stop-daemon -S -b -x /root/carrier-blink.sh -- eth1 duckbill:red
+start-stop-daemon -S -b -x /root/carrier-blink.sh -- eth1 duckbill:red:status
 
 exit 0
