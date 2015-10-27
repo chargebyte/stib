@@ -149,7 +149,12 @@ disk-image: images/sdcard.img
 	split -b $(ROOTFSCHUNKSIZE) --numeric-suffixes=1 images/sdcard.img images/emmc.img.
 	gzip -9 images/emmc.img.*
 
-.PHONY:
+.PHONY: mrproper
 mrproper:
 	make -C u-boot mrproper
 	make -C linux mrproper
+
+.PHONY: distclean
+distclean: mrproper clean-rootfs rootfs-clean tools-clean
+	rm -rf linux-modules
+	rm -rf images
