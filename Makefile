@@ -1,4 +1,4 @@
-BOARD ?= duckbill
+PRODUCT ?= duckbill
 CROSS_COMPILE ?= arm-linux-gnueabi-
 JOBS ?= $(shell cat /proc/cpuinfo | grep processor | wc -l)
 
@@ -55,15 +55,27 @@ u-boot/u-boot.sb:
 linux: linux/arch/arm/boot/zImage
 
 linux/arch/arm/boot/zImage:
-	cat linux-configs/$(BOARD) > linux/.config
+	cat linux-configs/$(PRODUCT) > linux/.config
 	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" olddefconfig
 	$(MAKE) -C linux -j $(JOBS) ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" zImage modules
 	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" \
 	        INSTALL_MOD_PATH="$(shell pwd)/linux-modules" modules_install
 	rm -f linux-modules/lib/modules/*/build linux-modules/lib/modules/*/source
 
+linux-clean:
+	rm -f linux/arch/arm/boot/zImage
+
+linux-menuconfig:
+	cat linux-configs/$(PRODUCT) > linux/.config
+	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" menuconfig
+	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" savedefconfig
+	cat linux/defconfig > linux-configs/$(PRODUCT)
+	rm linux/defconfig
+
 dtbs:
 	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" dtbs
+
+kernel: linux dtbs
 
 .PHONY: clean
 clean: tools-clean
@@ -84,7 +96,7 @@ install: clean-rootfs
 	# linux kernel and device tree
 	sudo mkdir -p rootfs/boot
 	sudo cp -av linux/arch/arm/boot/zImage rootfs/boot/
-	sudo cp -av linux/arch/arm/boot/dts/imx28-$(BOARD).dtb rootfs/boot/
+	sudo cp -av linux/arch/arm/boot/dts/imx28-duckbill*.dtb rootfs/boot/
 	sudo cp -av linux-modules/lib/modules rootfs/lib
 	sudo chown 0:0 rootfs/boot/*
 	sudo chmod 0644 rootfs/boot/*
@@ -96,7 +108,7 @@ install: clean-rootfs
 	sudo mkdir rootfs-tmp
 	sudo cp -a debian-rootfs/files/* rootfs-tmp/
 	sudo cp -a debian-rootfs/files-duckbill/* rootfs-tmp/
-	sudo sh -c 'if [ -d debian-rootfs/files-$(BOARD) ]; then cp -a debian-rootfs/files-$(BOARD)/* rootfs-tmp/; fi'
+	sudo sh -c 'if [ -d debian-rootfs/files-$(PRODUCT) ]; then cp -a debian-rootfs/files-$(PRODUCT)/* rootfs-tmp/; fi'
 	sudo mkdir -p rootfs-tmp/usr/bin/
 	sudo cp -a /usr/bin/qemu-arm-static rootfs-tmp/usr/bin/
 	sudo chown 0:0 -R rootfs-tmp
@@ -136,3 +148,8 @@ disk-image: images/sdcard.img
 	rm -f images/emmc.img.*
 	split -b $(ROOTFSCHUNKSIZE) --numeric-suffixes=1 images/sdcard.img images/emmc.img.
 	gzip -9 images/emmc.img.*
+
+.PHONY:
+mrproper:
+	make -C u-boot mrproper
+	make -C linux mrproper
