@@ -119,7 +119,7 @@ You can also combine both variables, e.g.
 $ make PRODUCT=duckbill HWREV=v1 rootfs
 ```
 
-Default vaalues are `PRODUCT=duckbill` and `HWREV=v2`.
+Default values are `PRODUCT=duckbill` and `HWREV=v2`.
 
 These settings influence the default package selection and the U-Boot environment
 (fdt_file is switched in the image file).
