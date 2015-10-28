@@ -158,8 +158,8 @@ disk-image: images/sdcard.img
 
 .PHONY: mrproper
 mrproper:
-	make -C u-boot mrproper
-	make -C linux mrproper
+	-make -C u-boot mrproper
+	-make -C linux mrproper
 
 .PHONY: distclean
 distclean: mrproper clean-rootfs rootfs-clean tools-clean
