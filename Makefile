@@ -62,7 +62,7 @@ linux/arch/arm/boot/zImage:
 	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" olddefconfig
 	$(MAKE) -C linux -j $(JOBS) ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" zImage dtbs modules
 	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" \
-	        INSTALL_MOD_PATH="$(shell pwd)/linux-modules" modules_install
+	        INSTALL_MOD_PATH="../linux-modules" modules_install
 	rm -f linux-modules/lib/modules/*/build linux-modules/lib/modules/*/source
 
 linux-clean:
