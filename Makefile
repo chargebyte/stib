@@ -54,9 +54,9 @@ u-boot/u-boot.sb:
 	ln -sf fw_printenv u-boot/tools/env/fw_setenv
 	$(MAKE) -C u-boot -j $(JOBS) u-boot.sb CROSS_COMPILE="$(CROSS_COMPILE)"
 
-.PHONY: linux
 linux: linux/arch/arm/boot/zImage
 
+.PHONY: linux/arch/arm/boot/zImage
 linux/arch/arm/boot/zImage:
 	cat linux-configs/duckbill > linux/.config
 	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" olddefconfig
