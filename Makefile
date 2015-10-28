@@ -1,4 +1,5 @@
 PRODUCT ?= duckbill
+HWREV ?= v2
 CROSS_COMPILE ?= arm-linux-gnueabi-
 JOBS ?= $(shell cat /proc/cpuinfo | grep processor | wc -l)
 
@@ -7,7 +8,7 @@ UBOOT_BOARD ?= duckbill
 ROOTFSSIZE:=$(shell echo $$((320 * 1024 * 1024)))
 ROOTFSCHUNKSIZE:=$(shell echo $$((64 * 1024 * 1024)))
 
-PATH:=./tools/ptgen:./tools/fsl-imx-uuc:$(PATH)
+PATH:=./tools/ptgen:./tools/fsl-imx-uuc:./u-boot/tools/env:$(PATH)
 export PATH ROOTFSSIZE
 
 .PHONY: jessie-requirements
@@ -49,6 +50,8 @@ u-boot uboot: u-boot/u-boot.sb
 
 u-boot/u-boot.sb:
 	$(MAKE) -C u-boot $(UBOOT_BOARD)_defconfig CROSS_COMPILE="$(CROSS_COMPILE)"
+	$(MAKE) -C u-boot -j $(JOBS) env
+	ln -s fw_printenv u-boot/tools/env/fw_setenv
 	$(MAKE) -C u-boot -j $(JOBS) u-boot.sb CROSS_COMPILE="$(CROSS_COMPILE)"
 
 .PHONY: linux
@@ -143,6 +146,7 @@ images/rootfs.img:
 
 images/sdcard.img: images/rootfs.img
 	sh tools/gen_sdcard_ext4.sh images/sdcard.img u-boot/u-boot.sb images/rootfs.img $$(($(ROOTFSSIZE) / (1024 * 1024)))
+	sh tools/fixup_fdt_file.sh tools/fw_env.config $(PRODUCT) $(HWREV)
 
 disk-image: images/sdcard.img
 	rm -f images/emmc.img.*
