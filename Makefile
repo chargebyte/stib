@@ -51,7 +51,7 @@ u-boot uboot: u-boot/u-boot.sb
 u-boot/u-boot.sb:
 	$(MAKE) -C u-boot $(UBOOT_BOARD)_defconfig CROSS_COMPILE="$(CROSS_COMPILE)"
 	$(MAKE) -C u-boot -j $(JOBS) env
-	ln -s fw_printenv u-boot/tools/env/fw_setenv
+	ln -sf fw_printenv u-boot/tools/env/fw_setenv
 	$(MAKE) -C u-boot -j $(JOBS) u-boot.sb CROSS_COMPILE="$(CROSS_COMPILE)"
 
 .PHONY: linux
