@@ -55,15 +55,12 @@ u-boot/u-boot.sb:
 	$(MAKE) -C u-boot -j $(JOBS) u-boot.sb CROSS_COMPILE="$(CROSS_COMPILE)"
 
 .PHONY: linux
-linux: linux/arch/arm/boot/zImage linux-modules
+linux: linux/arch/arm/boot/zImage
 
 linux/arch/arm/boot/zImage:
 	cat linux-configs/duckbill > linux/.config
 	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" olddefconfig
-	$(MAKE) -C linux -j $(JOBS) ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" zImage dtbs
-
-linux-modules:
-	$(MAKE) -C linux -j $(JOBS) ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" modules
+	$(MAKE) -C linux -j $(JOBS) ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" zImage dtbs modules
 	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" \
 	        INSTALL_MOD_PATH="../linux-modules" modules_install
 	rm -f linux-modules/lib/modules/*/build linux-modules/lib/modules/*/source
