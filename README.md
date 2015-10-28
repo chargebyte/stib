@@ -18,12 +18,10 @@ system is limited by design. Please remember the following design decisions
 when using it:
 * This system is intended to be run on a developer (none-shared) host.
   No precautions are taken to prevent this system running in parallel with
-  a second instance.
+  a second instance in the same base directory.
 * This system heavily uses sudo to handle the file permissions of the target
   linux system properly. So ensure that the system user you are using has
   the required permissions.
-* To populate the target root filesystem, the mountpoint /mnt is used. Please
-  ensure, that you do not use it otherwise while running this system.
 * You need a working internet connection to download the Debian packages for the
   target system. Only some minor efforts are done to cache the downloaded files.
 

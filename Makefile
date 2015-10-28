@@ -140,9 +140,12 @@ images/rootfs.img:
 	mkdir -p images
 	dd if=/dev/zero of=images/rootfs.img seek=$$(($(ROOTFSSIZE) - 1)) bs=1 count=1
 	sudo mkfs.ext4 -F images/rootfs.img
-	sudo mount images/rootfs.img /mnt -o loop
-	sudo cp -a rootfs/* /mnt
-	sudo umount /mnt
+	mktemp -d > images/mountpoint
+	sudo mount images/rootfs.img $$(cat images/mountpoint) -o loop
+	sudo cp -a rootfs/* $$(cat images/mountpoint)
+	sudo umount $$(cat images/mountpoint)
+	sudo rmdir $$(cat images/mountpoint)
+	rm -f images/mountpoint
 
 images/sdcard.img: images/rootfs.img
 	sh tools/gen_sdcard_ext4.sh images/sdcard.img u-boot/u-boot.sb images/rootfs.img $$(($(ROOTFSSIZE) / (1024 * 1024)))
