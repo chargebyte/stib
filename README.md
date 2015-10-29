@@ -46,12 +46,21 @@ and see which packages are fetched and installed via apt. Note, that the multist
 in Ubuntu is faulty, so it's patched at this stage when the broken package is detected.
 This step need to be run only once.
 
+> Note:
+> Due to a bug in multistrap, please ensure that your working directory name does not include any
+> whitespace characters, otherwise multistrap will fail.
+> See [Debian Bug 803365](http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=803365) for details.
+
 This repository uses submodules to link/access various required sources and tools. So
-after cloning this repo, you have to init the submodules first:
+after cloning this repo, you have to init these submodules first:
 
 ```
 $ make prepare
 ```
+
+Since the linux kernel project size is around 1.2 GB, this can take a while; however, if you
+do not delete this directory, this is only required once. Later, hoping between branches and
+pulling new changesets in, is really fast.
 
 After this, compile the required tools, U-Boot and linux kernel:
 
