@@ -145,7 +145,7 @@ images/rootfs.img:
 	sudo mkfs.ext4 -F images/rootfs.img
 	mktemp -d > images/mountpoint
 	sudo mount images/rootfs.img $$(cat images/mountpoint) -o loop
-	sudo cp -a rootfs/* $$(cat images/mountpoint)
+	-sudo cp -a rootfs/* $$(cat images/mountpoint)
 	sudo umount $$(cat images/mountpoint)
 	sudo rmdir $$(cat images/mountpoint)
 	rm -f images/mountpoint
