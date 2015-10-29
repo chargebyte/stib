@@ -5,7 +5,11 @@ JOBS ?= $(shell cat /proc/cpuinfo | grep processor | wc -l)
 
 UBOOT_BOARD ?= duckbill
 
+ifeq ($(PRODUCT),duckbill)
+ROOTFSSIZE:=$(shell echo $$((512 * 1024 * 1024)))
+else
 ROOTFSSIZE:=$(shell echo $$((320 * 1024 * 1024)))
+endif
 ROOTFSCHUNKSIZE:=$(shell echo $$((64 * 1024 * 1024)))
 
 PATH:=./tools/ptgen:./tools/fsl-imx-uuc:./u-boot/tools/env:$(PATH)
