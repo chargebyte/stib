@@ -1,6 +1,6 @@
 PRODUCT ?= duckbill
 
-all: create-dirs feed-cache multistrap update-cache create-devs
+all: create-dirs multistrap create-devs
 
 create-dirs:
 	mkdir -p rootfs
