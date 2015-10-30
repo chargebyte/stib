@@ -1,4 +1,4 @@
-BOARD ?= duckbill
+PRODUCT ?= duckbill
 
 all: create-dirs feed-cache multistrap update-cache create-devs
 
@@ -7,7 +7,7 @@ create-dirs:
 	mkdir -p debcache
 
 multistrap:
-	sudo multistrap -f multistrap-$(BOARD).conf
+	sudo multistrap -f multistrap-$(PRODUCT).conf
 
 update-cache:
 	sudo cp -a rootfs/var/cache/apt/* debcache/
