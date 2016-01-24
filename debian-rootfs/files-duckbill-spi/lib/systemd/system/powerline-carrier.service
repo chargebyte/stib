@@ -1,0 +1,8 @@
+[Unit]
+Description=Powerline carrier indication
+
+[Service]
+ExecStart=/root/carrier-blink.sh eth1 duckbill:red:status
+
+[Install]
+WantedBy=multi-user.target

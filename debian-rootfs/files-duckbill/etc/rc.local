@@ -20,6 +20,6 @@ if [ ! -e "$STAMP" ]; then
 	run_rc_once && : > "$STAMP"
 fi
 
-[ -x /etc/rc.duckbill-leds ] && /etc/rc.duckbill-leds
+#[ -x /etc/rc.duckbill-leds ] && /etc/rc.duckbill-leds
 
 exit 0

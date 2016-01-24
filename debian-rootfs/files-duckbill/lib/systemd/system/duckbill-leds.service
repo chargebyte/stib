@@ -1,0 +1,14 @@
+[Unit]
+Description=Duckbill LEDs service
+After=network.target
+
+[Service]
+Type=simple
+RemainAfterExit=yes
+
+ExecStart=/bin/bash -c '/bin/echo none > /sys/class/leds/duckbill\:red\:status/trigger'
+ExecStop=/bin/bash -c '/bin/echo none > /sys/class/leds/duckbill\:green\:status/trigger'
+ExecStopPost=/bin/bash -c '/bin/echo none > /sys/class/leds/duckbill\:red\:status/trigger'
+
+[Install]
+WantedBy=multi-user.target

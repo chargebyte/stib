@@ -20,8 +20,4 @@ if [ ! -e "$STAMP" ]; then
 	run_rc_once && : > "$STAMP"
 fi
 
-[ -x /etc/rc.duckbill-leds ] && /etc/rc.duckbill-leds
-
-start-stop-daemon -S -b -x /root/carrier-blink.sh -- eth1 duckbill:red:status
-
 exit 0
