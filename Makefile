@@ -6,9 +6,9 @@ JOBS ?= $(shell cat /proc/cpuinfo | grep processor | wc -l)
 UBOOT_BOARD ?= duckbill
 
 ifeq ($(PRODUCT),duckbill)
-ROOTFSSIZE:=$(shell echo $$((544 * 1024 * 1024)))
+ROOTFSSIZE:=$(shell echo $$((600 * 1024 * 1024)))
 else
-ROOTFSSIZE:=$(shell echo $$((320 * 1024 * 1024)))
+ROOTFSSIZE:=$(shell echo $$((384 * 1024 * 1024)))
 endif
 ROOTFSCHUNKSIZE:=$(shell echo $$((64 * 1024 * 1024)))
 
