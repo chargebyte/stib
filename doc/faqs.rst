@@ -7,6 +7,24 @@ project called `STIB`_.
 
 .. _STIB: https://github.com/I2SE/stib
 
+USB recovery mode
+-----------------
+
+The USB recovery mode is activated when:
+
+* Duckbill is powered on without a bootable image in the eMMC,
+* PSWITCH is pressed for more than five seconds while ROM boot.
+
+Flashing
+--------
+
+The embedded eMMC flash can be programmed via Freescale's `MfgTool <https://www.nxp.com/webapp/Download?colCode=IMX_MFG_TOOL>`_. This uses the USB recovery mode of the i.MX28.
+In this mode the MfgTool transfers a small software into i.MX28's RAM, which is able to access the eMMC flash.
+
+Requirements:
+
+* Windows PC with USB 2.0 interface
+
 
 Update the Linux kernel
 -----------------------
