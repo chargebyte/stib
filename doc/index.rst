@@ -58,10 +58,8 @@ Duckbill 2 485/Duckbill 2 485+
    general
    duckbill-2_pin-muxing
    login
-   duckbill-2_leds
+   duckbill-2_rs485_leds
    uarts
-   i2c
-   adc
    networking
    partitions
    duckbill-2_preinstalled-packages
