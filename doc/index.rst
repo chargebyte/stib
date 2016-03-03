@@ -56,12 +56,11 @@ Duckbill 2 485/Duckbill 2 485+
    :maxdepth: 2
 
    general
-   duckbill-2_pin-muxing
    login
    duckbill-2_rs485_leds
-   uarts
+   duckbill-2_rs485_uarts
    networking
    partitions
-   duckbill-2_preinstalled-packages
    faqs
    sources
+
