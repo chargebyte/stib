@@ -11,30 +11,30 @@ HWREV="$3"
 
 case "$PRODUCT" in
 duckbill)
-	FDT_FILE="imx28-duckbill.dtb"
-	if [ "$HWREV" = "v2" ]; then
-		FDT_FILE="imx28-duckbill-v2.dtb"
+	FDT_FILE="imx28-duckbill-2.dtb"
+	if [ "$HWREV" = "v1" ]; then
+		FDT_FILE="imx28-duckbill.dtb"
 	fi
 	;;
 
 duckbill-spi)
-	FDT_FILE="imx28-duckbill-spi.dtb"
+	FDT_FILE="imx28-duckbill-2-spi.dtb"
 	if [ "$HWREV" = "v1" ]; then
-		FDT_FILE="imx28-duckbill-spi-v1.dtb"
+		FDT_FILE="imx28-duckbill-spi.dtb"
 	fi
 	;;
 
 duckbill-enocean)
-	FDT_FILE="imx28-duckbill-enocean.dtb"
+	FDT_FILE="imx28-duckbill-2-enocean.dtb"
 	if [ "$HWREV" = "v1" ]; then
-		FDT_FILE="imx28-duckbill-enocean-v1.dtb"
+		FDT_FILE="imx28-duckbill-enocean.dtb"
 	fi
 	;;
 
 duckbill-485)
-	FDT_FILE="imx28-duckbill-485.dtb"
+	FDT_FILE="imx28-duckbill-2-485.dtb"
 	if [ "$HWREV" = "v1" ]; then
-		FDT_FILE="imx28-duckbill-485-v1.dtb"
+		FDT_FILE="imx28-duckbill-485.dtb"
 	fi
 	;;
 esac
