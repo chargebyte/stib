@@ -46,9 +46,9 @@ The following table lists various device states.
 |          |          |                          | initialization                                   |
 +----------+----------+--------------------------+--------------------------------------------------+
 
-Additionally, the Duckbill 2 RS485 has two single LEDs on left and right side of the case.
-They indicate RS-485 operations by flashing and are operational after the Linux system has
-finished booting. The LEDs are handled by the ser2net application via sysfs.
+Additionally, the Duckbill 485 has two single LEDs on left and right side of the case.
+The LEDs are handled by the ser2net application via sysfs. They indicate RS-485 operations 
+by flashing and are operational after a socket connection to ser2net has been established.
 
 +-----------------+-------------------------------------+---------------------------------------+
 | Attribute       | TX LED                              | RX LED                                |
