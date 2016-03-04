@@ -26,6 +26,7 @@ This BSP documentation applies to several product variants:
 * :ref:`duckbill-2`
 * :ref:`duckbill-2-485`
 * :ref:`duckbill-2-enocean`
+* :ref:`duckbill-2-spi`
 
 .. _duckbill-2:
 
@@ -68,7 +69,7 @@ Duckbill 2 485/Duckbill 2 485+
 .. _duckbill-2-enocean:
 
 Duckbill 2 EnOcean
-------------------------------
+------------------
 
 .. toctree::
    :maxdepth: 2
@@ -81,3 +82,21 @@ Duckbill 2 EnOcean
    partitions
    faqs
    sources
+
+.. _duckbill-2-spi:
+
+Duckbill 2 SPI
+--------------
+
+.. toctree::
+   :maxdepth: 2
+
+   general
+   login
+   duckbill-2_spi_leds
+   spi
+   duckbill-2_spi_networking
+   partitions
+   faqs
+   sources
+
