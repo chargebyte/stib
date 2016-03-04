@@ -33,12 +33,7 @@ The following table lists various device states.
 +----------+----------+--------------------------+--------------------------------------------------+
 | on       | flashing | < 25s                    | Linux kernel is booting                          |
 +----------+----------+--------------------------+--------------------------------------------------+
-| on       | off      | persistent               | U-Boot could not start Linux, attach Debug UART  |
-|          |          |                          | to see U-Boot's error message;                   |
-|          |          |                          | check U-Boot's *image* and/or *fdt_file*         |
-|          |          |                          | environment settings and ensure, that these two  |
-|          |          |                          | files are present in the root filesystem below   |
-|          |          |                          | /boot                                            |
+| on       | off      | persistent               | U-Boot could not start Linux                     |
 +----------+----------+--------------------------+--------------------------------------------------+
 | off      | flashing | persistent               | Linux system is running                          |
 +----------+----------+--------------------------+--------------------------------------------------+
