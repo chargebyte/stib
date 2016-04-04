@@ -15,16 +15,32 @@ The USB recovery mode is activated when:
 * Duckbill is powered on without a bootable image in the eMMC,
 * PSWITCH is pressed for more than five seconds while ROM boot.
 
+Note: During USB recovery mode the Duckbill LEDs are off
+
 Flashing
 --------
 
-The embedded eMMC flash can be programmed via Freescale's `MfgTool <https://www.nxp.com/webapp/Download?colCode=IMX_MFG_TOOL>`_. This uses the USB recovery mode of the i.MX28.
+The embedded eMMC flash can be programmed via Freescale's Manufacturing Tool `MfgTool <https://www.nxp.com/webapp/Download?colCode=IMX_MFG_TOOL>`_ (registration required). This uses the USB recovery mode of the i.MX28.
 In this mode the MfgTool transfers a small software into i.MX28's RAM, which is able to access the eMMC flash.
 
 Requirements:
 
 * Windows PC with USB 2.0 interface
+* Freescale MfgTool 1 for i.MX28
 
+Note: USB 3.0 isn't supported by MfgTool
+
+Necessary steps:
+
+* Extract the ZIP archive with the Linux image
+* Copy the complete Duckbill directory ( e.g. Duckbill2_v1_2 ) into Freescale MfgTool Profile directory ( <MfgToolInstallDir>/Profiles ) 
+* Start Duckbill in USB recovery mode ( at first time this triggers a driver installation )
+* Start MfgTool
+* Press the button "Scan devices"
+* After the Duckbill has been found the button on the right should be named as "Start" and green
+* Select the profile which should be flashed via the drop-down list
+* Now press the button "Start" and wait until the writing process has been finished
+* Finally press the button "Stop" and disconnect Duckbill from USB
 
 Update the Linux kernel
 -----------------------
