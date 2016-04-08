@@ -38,7 +38,7 @@ Necessary steps:
 * Start MfgTool
 * Press the button "Scan devices"
 * After the Duckbill has been found the button on the right should be named as "Start" and green
-* Select the profile which should be flashed via the drop-down list
+* Select the profile ( is the same as the directory name copied above ) which should be flashed via the drop-down list
 * Now press the button "Start" and wait until the writing process has been finished
 * Finally press the button "Stop" and disconnect Duckbill from USB
 
