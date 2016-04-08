@@ -1,5 +1,5 @@
-UART
-====
+EnOcean
+=======
 
 The Duckbill EnOcean has an application UART which is connected to the 
 EnOcean module TCM310.

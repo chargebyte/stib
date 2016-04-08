@@ -1,5 +1,5 @@
-UART
-====
+RS-485
+======
 
 The Duckbill 485 has an application UART which is connected to the
 RS-485 interface.
