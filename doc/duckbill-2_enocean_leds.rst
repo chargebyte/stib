@@ -62,7 +62,3 @@ The blue LED is free to use by custom applications.
 +========================================+=============+=================+
 | /sys/class/leds/duckbill:blue:enocean  | blue        | none            |
 +----------------------------------------+-------------+-----------------+
-
-
-
-

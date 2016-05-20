@@ -40,6 +40,3 @@ The following table lists various device states.
 | flashing | flashing | persistent               | Linux system is running and has a working SPI    |
 |          |          |                          | connection                                       |
 +----------+----------+--------------------------+--------------------------------------------------+
-
-
-

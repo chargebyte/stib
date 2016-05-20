@@ -38,4 +38,3 @@ Supported baudrates:
 * 57600
 * 115200
 * 230400
-
