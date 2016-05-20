@@ -42,7 +42,7 @@ The following table lists various device states.
 +----------+----------+--------------------------+--------------------------------------------------+
 
 Additionally, the Duckbill 485 has two single LEDs on left and right side of the case.
-The LEDs are handled by the ser2net application via sysfs. They indicate RS-485 operations 
+The LEDs are handled by the ser2net application via sysfs. They indicate RS-485 operations
 by flashing and are operational after a socket connection to ser2net has been established.
 
 +-----------------+-------------------------------------+---------------------------------------+

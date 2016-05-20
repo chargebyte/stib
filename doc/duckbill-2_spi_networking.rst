@@ -6,7 +6,7 @@ Linux system. It supports 10/100 Mbit connections and MDI/MDI-X.
 
 The QCA driver provides an additional network interface, which is called *eth1*.
 
-Both interfaces are bridged in Linux as interface *br0*. 
+Both interfaces are bridged in Linux as interface *br0*.
 
 The following list mentions only some features a Linux system is capable of:
 

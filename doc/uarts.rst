@@ -4,7 +4,7 @@ UARTs
 The Duckbill comes with two UARTs on the pin headers. The Debug UART (part of connector 4)
 is usually used as system console, while the second UART (part of connector 3)
 is used as application UART. Please note, that the Debug UART has 3.3 V level,
-so do not connect it directly to your PCs serial port. We recommend to use an 
+so do not connect it directly to your PCs serial port. We recommend to use an
 USB to UART TTL level adapter; there are plenty products available.
 
 +------------------------------+----------------+------------------+

@@ -33,7 +33,7 @@ Note: USB 3.0 isn't supported by MfgTool
 Necessary steps:
 
 * Extract the ZIP archive with the Linux image
-* Copy the complete Duckbill directory ( e.g. Duckbill2_v1_2 ) into Freescale MfgTool Profile directory ( <MfgToolInstallDir>/Profiles ) 
+* Copy the complete Duckbill directory ( e.g. Duckbill2_v1_2 ) into Freescale MfgTool Profile directory ( <MfgToolInstallDir>/Profiles )
 * Start Duckbill in USB recovery mode ( at first time this triggers a driver installation )
 * Start MfgTool
 * Press the button "Scan devices"
