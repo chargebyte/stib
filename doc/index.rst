@@ -45,6 +45,7 @@ Duckbill 2
    adc
    networking
    partitions
+   sdcard
    duckbill-2_preinstalled-packages
    faqs
    sources
@@ -80,6 +81,7 @@ Duckbill 2 EnOcean
    duckbill-2_enocean_uarts
    networking
    partitions
+   sdcard
    faqs
    sources
 
