@@ -64,6 +64,7 @@ Duckbill 2 485/Duckbill 2 485+
    duckbill-2_rs485_uarts
    networking
    partitions
+   sdcard
    faqs
    sources
 

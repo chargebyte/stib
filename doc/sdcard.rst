@@ -21,4 +21,6 @@ was possible for former Duckbill series. Duckbill 2 series devices always
 boot from internal eMMC flash (however, it would be possible to instruct
 U-Boot to not load linux kernel/root filesystem from eMMC but from SD card).
 
-Note 2: Support for the SD card slot was introduced with BSP v1.3.
+Note 2: Support for the SD card slot was introduced with BSP v1.3 for
+        Duckbill 2 and Duckbill 2 EnOcean, and with BSP v1.4 for
+        Duckbill 2 485/485+.
