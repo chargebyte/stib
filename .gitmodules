@@ -7,3 +7,6 @@
 [submodule "linux"]
 	path = linux
 	url = https://github.com/I2SE/linux.git
+[submodule "imx-bootlets"]
+	path = imx-bootlets
+	url = https://github.com/I2SE/imx-bootlets.git
