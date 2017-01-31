@@ -1,5 +1,5 @@
 PRODUCT ?= duckbill
-HWREV ?= v1
+HWREV ?= v2
 CROSS_COMPILE ?= arm-linux-gnueabi-
 JOBS ?= $(shell cat /proc/cpuinfo | grep processor | wc -l)
 
