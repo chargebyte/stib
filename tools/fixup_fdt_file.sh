@@ -37,6 +37,11 @@ duckbill-485)
 		FDT_FILE="imx28-duckbill-485.dtb"
 	fi
 	;;
+
+evachargese)
+	FDT_FILE="imx28-evachargese.dtb"
+	;;
+
 esac
 
 [ -n "$FDT_FILE" ] || {
