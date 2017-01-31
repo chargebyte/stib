@@ -1,16 +1,24 @@
 PRODUCT ?= duckbill
-HWREV ?= v2
+HWREV ?= v1
 CROSS_COMPILE ?= arm-linux-gnueabi-
 JOBS ?= $(shell cat /proc/cpuinfo | grep processor | wc -l)
 
-UBOOT_BOARD ?= duckbill
+ifeq ($(PRODUCT),evachargese)
+BL_BOARD ?= evachargese
+endif
+
+BL_BOARD ?= duckbill
+
+ROOTFSSIZE:=$(shell echo $$((384 * 1024 * 1024)))
+ROOTFSCHUNKSIZE:=$(shell echo $$((64 * 1024 * 1024)))
 
 ifeq ($(PRODUCT),duckbill)
 ROOTFSSIZE:=$(shell echo $$((640 * 1024 * 1024)))
-else
-ROOTFSSIZE:=$(shell echo $$((384 * 1024 * 1024)))
 endif
-ROOTFSCHUNKSIZE:=$(shell echo $$((64 * 1024 * 1024)))
+
+ifeq ($(PRODUCT),evachargese)
+ROOTFSSIZE:=$(shell echo $$((640 * 1024 * 1024)))
+endif
 
 PATH:=./tools/ptgen:./tools/fsl-imx-uuc:./u-boot/tools/env:$(PATH)
 export PATH ROOTFSSIZE
@@ -53,7 +61,7 @@ tools-clean:
 u-boot uboot: u-boot/u-boot.sb
 
 u-boot/u-boot.sb:
-	$(MAKE) -C u-boot $(UBOOT_BOARD)_defconfig CROSS_COMPILE="$(CROSS_COMPILE)"
+	$(MAKE) -C u-boot $(BL_BOARD)_defconfig CROSS_COMPILE="$(CROSS_COMPILE)"
 	$(MAKE) -C u-boot -j $(JOBS) env
 	ln -sf fw_printenv u-boot/tools/env/fw_setenv
 	$(MAKE) -C u-boot -j $(JOBS) u-boot.sb CROSS_COMPILE="$(CROSS_COMPILE)"
@@ -62,10 +70,10 @@ linux: linux/arch/arm/boot/zImage
 
 .PHONY: linux/arch/arm/boot/zImage
 linux/arch/arm/boot/zImage:
-	cat linux-configs/duckbill > linux/.config
+	cat linux-configs/$(BL_BOARD) > linux/.config
 	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" olddefconfig
-	$(MAKE) -C linux -j $(JOBS) ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" zImage dtbs modules
-	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" \
+	$(MAKE) -C linux -j $(JOBS) ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)"
+	-$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" \
 	        INSTALL_MOD_PATH="../linux-modules" modules_install
 	rm -f linux-modules/lib/modules/*/build linux-modules/lib/modules/*/source
 
@@ -73,10 +81,10 @@ linux-clean:
 	rm -f linux/arch/arm/boot/zImage
 
 linux-menuconfig:
-	cat linux-configs/duckbill > linux/.config
+	cat linux-configs/$(BL_BOARD) > linux/.config
 	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" menuconfig
 	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" savedefconfig
-	cat linux/defconfig > linux-configs/duckbill
+	cat linux/defconfig > linux-configs/$(BL_BOARD)
 	rm linux/defconfig
 
 dtbs:
@@ -84,10 +92,18 @@ dtbs:
 
 kernel: linux dtbs
 
+.PHONY: imx-bootlets
+imx-bootlets: imx-bootlets/imx28_ivt_linux.sb
+
+imx-bootlets/imx28_ivt_linux.sb:
+	cat linux/arch/arm/boot/zImage linux/arch/arm/boot/dts/imx28-$(PRODUCT).dtb > imx-bootlets/zImage
+	$(MAKE) -C imx-bootlets -j1 MEM_TYPE=MEM_DDR1 BOARD=$(BL_BOARD)
+
 .PHONY: clean
 clean: tools-clean
 	$(MAKE) -C u-boot clean
 	$(MAKE) -C linux clean
+	$(MAKE) -C imx-bootlets clean
 
 rootfs-clean:
 	$(MAKE) -C debian-rootfs clean
@@ -103,18 +119,18 @@ install: clean-rootfs
 	# linux kernel and device tree
 	sudo mkdir -p rootfs/boot
 	sudo cp -av linux/arch/arm/boot/zImage rootfs/boot/
-	sudo cp -av linux/arch/arm/boot/dts/imx28-duckbill*.dtb rootfs/boot/
-	sudo cp -av linux-modules/lib/modules rootfs/lib
+	sudo cp -av linux/arch/arm/boot/dts/imx28-$(BL_BOARD)*.dtb rootfs/boot/
+	sudo sh -c 'if [ -d linux-modules/lib/modules ]; then cp -av linux-modules/lib/modules rootfs/lib; fi'
 	sudo chown 0:0 rootfs/boot/*
 	sudo chmod 0644 rootfs/boot/*
-	sudo chown 0:0 -R rootfs/lib/modules
-	sudo sh -c 'find rootfs/lib/modules -type d -exec chmod 0755 {} \;'
-	sudo sh -c 'find rootfs/lib/modules -type f -exec chmod 0644 {} \;'
+	-sudo chown 0:0 -R rootfs/lib/modules
+	-sudo sh -c 'find rootfs/lib/modules -type d -exec chmod 0755 {} \;'
+	-sudo sh -c 'find rootfs/lib/modules -type f -exec chmod 0644 {} \;'
 
 	# fold in root fs overlay
 	sudo mkdir rootfs-tmp
 	sudo cp -a debian-rootfs/files/* rootfs-tmp/
-	sudo cp -a debian-rootfs/files-duckbill/* rootfs-tmp/
+	sudo sh -c 'if [ -d debian-rootfs/files-$(BL_BOARD) ]; then cp -a debian-rootfs/files-$(BL_BOARD)/* rootfs-tmp/; fi'
 	sudo sh -c 'if [ -d debian-rootfs/files-$(PRODUCT) ]; then cp -a debian-rootfs/files-$(PRODUCT)/* rootfs-tmp/; fi'
 	sudo mkdir -p rootfs-tmp/usr/bin/
 	sudo cp -a /usr/bin/qemu-arm-static rootfs-tmp/usr/bin/
