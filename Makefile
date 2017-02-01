@@ -97,7 +97,7 @@ imx-bootlets: imx-bootlets/imx28_ivt_linux.sb
 
 imx-bootlets/imx28_ivt_linux.sb:
 	cat linux/arch/arm/boot/zImage linux/arch/arm/boot/dts/imx28-$(PRODUCT).dtb > imx-bootlets/zImage
-	$(MAKE) -C imx-bootlets -j1 MEM_TYPE=MEM_DDR1 BOARD=$(BL_BOARD)
+	$(MAKE) -C imx-bootlets -j1 CROSS_COMPILE="$(CROSS_COMPILE)" MEM_TYPE=MEM_DDR1 BOARD=$(BL_BOARD)
 
 .PHONY: clean
 clean: tools-clean
