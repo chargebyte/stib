@@ -20,6 +20,12 @@ ifeq ($(PRODUCT),evachargese)
 ROOTFSSIZE:=$(shell echo $$((640 * 1024 * 1024)))
 endif
 
+ifeq ($(BL_BOARD),evachargese)
+BOOTSTREAM:=imx-bootlets/imx28_ivt_linux.sb
+else
+BOOTSTREAM:=u-boot/u-boot.sb
+endif
+
 PATH:=./tools/ptgen:./tools/fsl-imx-uuc:./u-boot/tools/env:$(PATH)
 export PATH ROOTFSSIZE
 
@@ -171,7 +177,7 @@ images/rootfs.img:
 	rm -f images/mountpoint
 
 images/sdcard.img: images/rootfs.img
-	sh tools/gen_sdcard_ext4.sh images/sdcard.img u-boot/u-boot.sb images/rootfs.img $$(($(ROOTFSSIZE) / (1024 * 1024)))
+	sh tools/gen_sdcard_ext4.sh images/sdcard.img $(BOOTSTREAM) images/rootfs.img $$(($(ROOTFSSIZE) / (1024 * 1024)))
 	sh tools/fixup_fdt_file.sh tools/fw_env.config $(PRODUCT) $(HWREV)
 
 disk-image: images/sdcard.img
