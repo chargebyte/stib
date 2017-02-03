@@ -138,6 +138,9 @@ install: clean-rootfs
 	sudo cp -a debian-rootfs/files/* rootfs-tmp/
 	sudo sh -c 'if [ -d debian-rootfs/files-$(BL_BOARD) ]; then cp -a debian-rootfs/files-$(BL_BOARD)/* rootfs-tmp/; fi'
 	sudo sh -c 'if [ -d debian-rootfs/files-$(PRODUCT) ]; then cp -a debian-rootfs/files-$(PRODUCT)/* rootfs-tmp/; fi'
+ifdef CUSTOM
+	sudo sh -c 'if [ -d debian-rootfs/files-$(PRODUCT)-custom ]; then cp -a debian-rootfs/files-$(PRODUCT)-custom/* rootfs-tmp/; fi'
+endif
 	sudo mkdir -p rootfs-tmp/usr/bin/
 	sudo cp -a /usr/bin/qemu-arm-static rootfs-tmp/usr/bin/
 	sudo chown 0:0 -R rootfs-tmp
