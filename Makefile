@@ -17,7 +17,7 @@ ROOTFSSIZE:=$(shell echo $$((640 * 1024 * 1024)))
 endif
 
 ifeq ($(PRODUCT),evachargese)
-ROOTFSSIZE:=$(shell echo $$((640 * 1024 * 1024)))
+ROOTFSSIZE:=$(shell echo $$((512 * 1024 * 1024)))
 endif
 
 ifeq ($(BL_BOARD),evachargese)
@@ -183,7 +183,7 @@ images/sdcard.img: images/rootfs.img
 disk-image: images/sdcard.img
 	rm -f images/emmc.img.*
 	split -b $(ROOTFSCHUNKSIZE) --numeric-suffixes=1 images/sdcard.img images/emmc.img.
-	gzip -9 images/emmc.img.*
+	gzip -k -9 images/emmc.img.*
 
 .PHONY: mrproper
 mrproper:
