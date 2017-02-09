@@ -5,9 +5,11 @@ JOBS ?= $(shell cat /proc/cpuinfo | grep processor | wc -l)
 
 ifeq ($(PRODUCT),evachargese)
 BL_BOARD ?= evachargese
-endif
-
+PRODUCT_COMMON:=
+else
 BL_BOARD ?= duckbill
+PRODUCT_COMMON:=duckbill
+endif
 
 ROOTFSSIZE:=$(shell echo $$((384 * 1024 * 1024)))
 ROOTFSCHUNKSIZE:=$(shell echo $$((64 * 1024 * 1024)))
@@ -136,14 +138,18 @@ install: clean-rootfs
 	# fold in root fs overlay
 	sudo mkdir rootfs-tmp
 	sudo cp -a debian-rootfs/files/* rootfs-tmp/
-	sudo sh -c 'if [ -d debian-rootfs/files-$(BL_BOARD) ]; then cp -a debian-rootfs/files-$(BL_BOARD)/* rootfs-tmp/; fi'
-	sudo sh -c 'if [ -d debian-rootfs/files-$(PRODUCT) ]; then cp -a debian-rootfs/files-$(PRODUCT)/* rootfs-tmp/; fi'
-ifdef CUSTOM
-	sudo sh -c 'if [ -d debian-rootfs/files-$(PRODUCT)-custom ]; then cp -a debian-rootfs/files-$(PRODUCT)-custom/* rootfs-tmp/; fi'
+	# fold in common files for this product
+ifneq ($(PRODUCT_COMMON),)
+	sudo cp -a debian-rootfs/files-$(PRODUCT_COMMON)/* rootfs-tmp/
 endif
+	# fold in product specific files
+	sudo sh -c 'if [ -d debian-rootfs/files-$(PRODUCT) ]; then cp -a debian-rootfs/files-$(PRODUCT)/* rootfs-tmp/; fi'
+	# and fold in customer specific files (if present)
+	sudo sh -c 'if [ -d debian-rootfs/files-$(PRODUCT)-custom ]; then cp -a debian-rootfs/files-$(PRODUCT)-custom/* rootfs-tmp/; fi'
 	sudo mkdir -p rootfs-tmp/usr/bin/
 	sudo cp -a /usr/bin/qemu-arm-static rootfs-tmp/usr/bin/
 	sudo chown 0:0 -R rootfs-tmp
+	# for root fs resizing after first boot
 	sudo mv rootfs/sbin/init rootfs/sbin/init.orig
 	sudo cp -a rootfs-tmp/* rootfs
 	sudo rm -rf rootfs-tmp
@@ -156,6 +162,7 @@ endif
 	sudo umount rootfs/proc
 
 	# cleanup
+	-sudo sh -c 'find rootfs -name .stib_placeholder -exec rm {} \;'
 	sudo rm -f rootfs/init-chroot.sh
 	sudo rm -rf rootfs/var/cache/apt/*
 
