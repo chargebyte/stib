@@ -52,7 +52,7 @@ prepare:
 	git submodule init
 	git submodule update
 
-tools: tools/fsl-imx-uuc/sdimage tools/ptgen/ptgen
+tools: tools/fsl-imx-uuc/sdimage tools/ptgen/ptgen tools/elftosb/elftosb
 
 tools/fsl-imx-uuc/sdimage: tools/fsl-imx-uuc/sdimage.c tools/fsl-imx-uuc/Makefile
 	$(MAKE) -C tools/fsl-imx-uuc
@@ -60,10 +60,14 @@ tools/fsl-imx-uuc/sdimage: tools/fsl-imx-uuc/sdimage.c tools/fsl-imx-uuc/Makefil
 tools/ptgen: tools/ptgen/ptgen.c tools/ptgen/Makefile
 	$(MAKE) -C tools/ptgen
 
+tools/elftosb/elftosb:
+	$(MAKE) -C tools/elftosb
+
 .PHONY: tools-clean
 tools-clean:
 	$(MAKE) -C tools/fsl-imx-uuc clean
 	$(MAKE) -C tools/ptgen clean
+	$(MAKE) -C tools/elftosb clean
 
 .PHONY: u-boot uboot
 u-boot uboot: u-boot/u-boot.sb
