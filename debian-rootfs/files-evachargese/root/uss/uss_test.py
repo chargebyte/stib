@@ -118,7 +118,7 @@ def _test_port(args):
         _control_pwm(port, True)
 
         # Enable PP pullup resistor
-        port.set_pp_pullup(True)
+        port.set_pp_pullup(True)
 
         try:
             error = {}
