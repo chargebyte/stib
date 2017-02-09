@@ -28,7 +28,7 @@ else
 BOOTSTREAM:=u-boot/u-boot.sb
 endif
 
-PATH:=./tools/ptgen:./tools/fsl-imx-uuc:./u-boot/tools/env:$(PATH)
+PATH:=./tools/ptgen:./tools/fsl-imx-uuc:./u-boot/tools/env:./tools/elftosb/bld/linux:$(PATH)
 export PATH ROOTFSSIZE
 
 .PHONY: jessie-requirements
