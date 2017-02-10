@@ -10,6 +10,8 @@
 [submodule "imx-bootlets"]
 	path = imx-bootlets
 	url = https://github.com/I2SE/imx-bootlets.git
+	ignore = dirty
 [submodule "tools/elftosb"]
 	path = tools/elftosb
 	url = https://github.com/eewiki/elftosb.git
+	ignore = dirty
