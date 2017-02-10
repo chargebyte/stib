@@ -39,7 +39,8 @@ duckbill-485)
 	;;
 
 evachargese)
-	FDT_FILE="imx28-evachargese.dtb"
+	echo "EVAchargeSE does not use U-Boot as bootloader, no fixup required." >&2
+	exit 0
 	;;
 
 esac
