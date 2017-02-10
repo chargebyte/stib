@@ -112,6 +112,20 @@ imx-bootlets/imx28_ivt_linux.sb: linux/arch/arm/boot/zImage
 	cat linux/arch/arm/boot/zImage linux/arch/arm/boot/dts/imx28-$(PRODUCT).dtb > imx-bootlets/zImage
 	$(MAKE) -C imx-bootlets -j1 CROSS_COMPILE="$(CROSS_COMPILE)" MEM_TYPE=MEM_DDR1 BOARD=$(BL_BOARD)
 
+
+OPENPLCUTILS_INSTALLDIR:=${CURDIR}/programs/open-plc-utils/rootfs
+$(OPENPLCUTILS_INSTALLDIR):
+	$(MAKE) -C programs/open-plc-utils CROSS="arm-linux-gnueabi-"
+	sudo $(MAKE) -C programs/open-plc-utils ROOTFS="$(OPENPLCUTILS_INSTALLDIR)" install
+
+programs: $(OPENPLCUTILS_INSTALLDIR)
+
+.PHONY: programs-clean
+programs-clean:
+	-rm -rf $(OPENPLCUTILS_INSTALLDIR)
+	$(MAKE) -C programs/open-plc-utils clean
+
+
 .PHONY: clean
 clean: tools-clean
 	$(MAKE) -C u-boot clean
@@ -125,7 +139,7 @@ rootfs-clean:
 rootfs:
 	$(MAKE) -C debian-rootfs
 
-install: clean-rootfs
+install: clean-rootfs $(if $(findstring evacharge,$(PRODUCT)),programs)
 	sudo mkdir -p rootfs
 	sudo cp -a debian-rootfs/rootfs/* rootfs/
 
@@ -150,7 +164,10 @@ endif
 	# fold in product specific files
 	sudo sh -c 'if [ -d debian-rootfs/files-$(PRODUCT) ]; then cp -a debian-rootfs/files-$(PRODUCT)/* rootfs-tmp/; fi'
 	# and fold in customer specific files (if present)
-	sudo sh -c 'if [ -d debian-rootfs/files-$(PRODUCT)-custom ]; then cp -a debian-rootfs/files-$(PRODUCT)-custom/* rootfs-tmp/; fi'
+	sudo sh -c 'if [ -d debian-rootfs/files-$(PRODUCT)-custom ]; then cp -a debian-rootfs/files-$(PRODUCT)-custom/* rootfs-tmp/ || true; fi'
+ifeq ($(PRODUCT),evachargese)
+	sudo sh -c 'cp -a programs/open-plc-utils/rootfs/* rootfs-tmp/'
+endif
 	sudo mkdir -p rootfs-tmp/usr/bin/
 	sudo cp -a /usr/bin/qemu-arm-static rootfs-tmp/usr/bin/
 	sudo chown 0:0 -R rootfs-tmp
