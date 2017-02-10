@@ -108,7 +108,7 @@ kernel: linux dtbs
 .PHONY: imx-bootlets
 imx-bootlets: imx-bootlets/imx28_ivt_linux.sb
 
-imx-bootlets/imx28_ivt_linux.sb:
+imx-bootlets/imx28_ivt_linux.sb: linux/arch/arm/boot/zImage
 	cat linux/arch/arm/boot/zImage linux/arch/arm/boot/dts/imx28-$(PRODUCT).dtb > imx-bootlets/zImage
 	$(MAKE) -C imx-bootlets -j1 CROSS_COMPILE="$(CROSS_COMPILE)" MEM_TYPE=MEM_DDR1 BOARD=$(BL_BOARD)
 
