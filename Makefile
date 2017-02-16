@@ -215,7 +215,9 @@ images/sdcard.img: images/rootfs.img
 disk-image: images/sdcard.img
 	rm -f images/emmc.img.*
 	split -b $(ROOTFSCHUNKSIZE) --numeric-suffixes=1 images/sdcard.img images/emmc.img.
-	gzip -k -9 images/emmc.img.*
+ifeq ($(BL_BOARD),duckbill)
+	gzip -9 images/emmc.img.*
+endif
 
 .PHONY: mrproper
 mrproper:
