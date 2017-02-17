@@ -11,6 +11,15 @@
 #
 # By default this script does nothing.
 
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+. /lib/init/rc-once.sh
+
+if [ ! -e "$STAMP" ]; then
+        # Run scripts under /etc/rc.once.d
+        run_rc_once && : > "$STAMP"
+fi
+
 # Export GPIOs
 /root/evse-gpio.sh export
 
