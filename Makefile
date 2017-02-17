@@ -213,10 +213,12 @@ images/sdcard.img: images/rootfs.img
 	sh tools/fixup_fdt_file.sh tools/fw_env.config $(PRODUCT) $(HWREV)
 
 disk-image: images/sdcard.img
-	rm -f images/emmc.img.*
+	rm -f images/ucl.xml images/emmc.img.*
 	split -b $(ROOTFSCHUNKSIZE) --numeric-suffixes=1 images/sdcard.img images/emmc.img.
 ifeq ($(BL_BOARD),duckbill)
 	gzip -9 images/emmc.img.*
+else
+	tools/gen_ucl_xml.sh images/ > images/ucl.xml
 endif
 
 .PHONY: mrproper
