@@ -2,10 +2,12 @@ Simple Target Image Builder
 ===========================
 
 This repository contains a simple but straightforward system to create a bootable
-Linux system for the I2SE Duckbill device series: it compiles U-Boot as boot loader,
-compiles a Linux kernel with device tree blobs and creates a root filesystem
-based on Debian Jessie 8 (armel). Then all is packed into a single disk image,
-ready to be used on the SD card and/or Duckbill's internal eMMC.
+Linux system for the I2SE Duckbill and EVAchargeSE device series: for Duckbill
+devices it compiles U-Boot as boot loader, for EVAchargeSE it uses Freescale/NXP's
+imx-bootlets as bootloader, then it compiles a Linux kernel with device tree blobs
+and creates a root filesystem based on Debian Jessie 8 (armel).
+Then all is packed into a single disk image, ready to be used on the SD card
+(for older Duckbills) and/or the internal eMMC.
 
 This system is intended to be run on a recent Linux system, currently Debian Jessie 8
 and Ubuntu 14.04 (LTS) is supported. The main reason for this is, that both distributions
