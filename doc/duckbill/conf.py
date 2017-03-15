@@ -47,7 +47,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Duckbill BSP'
-copyright = u'2016, I2SE GmbH'
+copyright = u'2016-2017, I2SE GmbH'
 author = u'I2SE GmbH'
 
 # The version info for the project you're documenting, acts as replacement for
