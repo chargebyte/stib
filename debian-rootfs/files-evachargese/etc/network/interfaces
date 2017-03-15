@@ -1,0 +1,19 @@
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+source /etc/network/interfaces.d/*
+
+auto lo eth0 qca0
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet static
+    address 192.168.37.250
+    netmask 255.255.255.0
+
+iface qca0 inet static
+    address 192.168.66.2
+    netmask 255.255.255.0
+    pre-up ip link set eth1 name qca0 || true
+#    post-up /root/flash_qca7000_temporarily.sh
+

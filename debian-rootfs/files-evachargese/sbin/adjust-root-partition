@@ -1,0 +1,19 @@
+#!/bin/sh
+
+export LC_ALL=C LANGUAGE=C LANG=C
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+# The root partition offset must be equal to the value from gen_sdcard_ext4.sh
+
+cat <<EOF | fdisk /dev/mmcblk0
+p
+d
+2
+n
+p
+2
+20480
++3072M
+p
+w
+EOF

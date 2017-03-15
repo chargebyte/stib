@@ -7,3 +7,15 @@
 [submodule "linux"]
 	path = linux
 	url = https://github.com/I2SE/linux.git
+[submodule "imx-bootlets"]
+	path = imx-bootlets
+	url = https://github.com/I2SE/imx-bootlets.git
+	ignore = dirty
+[submodule "tools/elftosb"]
+	path = tools/elftosb
+	url = https://github.com/eewiki/elftosb.git
+	ignore = dirty
+[submodule "programs/open-plc-utils"]
+	path = programs/open-plc-utils
+	url = https://github.com/qca/open-plc-utils.git
+	ignore = dirty

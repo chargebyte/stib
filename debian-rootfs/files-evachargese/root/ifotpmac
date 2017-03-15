@@ -1,0 +1,42 @@
+#!/bin/bash
+#
+#  Copyright (c) 2013 I2SE GmbH
+#
+
+# $1 qca0
+# $2 "00:B0:52" 
+# $3 HW_OCOTP_CUST0
+
+function usage {
+        echo "Usage: $0 INTERFACE OUI OTPREGISTER"
+        exit 1
+}
+
+if [ $# -ne 3 ]; then
+        usage
+fi
+
+oui="$2"
+otpfile="/sys/fsl_otp/$3"
+
+if [ "${#oui}" != "8" ]; then
+	usage
+fi
+
+if [ ! -e "$otpfile" ]; then
+	echo "File doesn't exists: $otpfile"
+	exit 1
+fi
+
+val=`head "$otpfile"`
+val=`printf "%08X" $((val))`
+
+if [ "${#val}" != "8" ]; then
+	echo "Invalid register value: $val"
+	exit 1
+fi
+
+mac="${oui}:${val:2:2}:${val:4:2}:${val:6:2}"
+
+ifconfig "$1" hw ether "$mac"
+
