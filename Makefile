@@ -32,6 +32,14 @@ TOOLS:=${CURDIR}/tools
 PATH:=$(TOOLS)/ptgen:$(TOOLS)/fsl-imx-uuc:${CURDIR}/u-boot/tools/env:$(TOOLS)/elftosb/bld/linux:$(PATH)
 export PATH ROOTFSSIZE
 
+.PHONY: help
+help:
+	@echo 'STIP - Simple Target Image Builder'
+	@echo '----------------------------------'
+	@echo ''
+	@echo 'Please have a look at the README.md for valid make targets.'
+	@echo ''
+
 .PHONY: jessie-requirements
 jessie-requirements:
 	sudo apt-get install -y apt-transport-https build-essential make patch multistrap curl bc binfmt-support libssl-dev qemu-user-static lzop
