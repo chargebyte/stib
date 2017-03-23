@@ -159,7 +159,7 @@ install: clean-rootfs $(if $(findstring evacharge,$(PRODUCT)),programs)
 	sudo cp -a debian-rootfs/files/* rootfs-tmp/
 	# fold in common files for this product
 ifneq ($(PRODUCT_COMMON),)
-	sudo cp -a debian-rootfs/files-$(PRODUCT_COMMON)/* rootfs-tmp/
+	sudo cp -a debian-rootfs/files-$(PRODUCT_COMMON)-common/* rootfs-tmp/
 endif
 	# fold in product specific files
 	sudo sh -c 'if [ -d debian-rootfs/files-$(PRODUCT) ]; then cp -a debian-rootfs/files-$(PRODUCT)/* rootfs-tmp/; fi'
