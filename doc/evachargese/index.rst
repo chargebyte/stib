@@ -19,6 +19,7 @@ EVAcharge SE
    general
    login
    leds
+   clock
    can
    gpio
    usb
