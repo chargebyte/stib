@@ -99,7 +99,7 @@ variable *bootargs*. However, on Duckbill this variable is constructed at run-ti
 So if you need to append some command line arguments, please extend the U-Boot variable
 *mmcargs*, e.g.::
 
-  fw_setenv mmcargs console=\${console},\${baudrate} root=\${mmcroot} rootwait bootsys=\${bootsys} panic=1 <something to append>
+  fw_setenv mmcargs 'setenv bootargs console=${console},${baudrate} root=${mmcroot} rootwait bootsys=${bootsys} panic=1 <something to append>'
   sync
 
 Please note, that the default content of mmcargs contains variable names, so you have
@@ -109,7 +109,7 @@ To make it easier during development, it is recommended to introduce a dedicated
 and to append solely a reference to it, e.g.::
 
   fw_setenv custom_args <something to append>
-  fw_setenv mmcargs console=\${console},\${baudrate} root=\${mmcroot} rootwait bootsys=\${bootsys} panic=1 \${custom_args}
+  fw_setenv mmcargs 'setenv bootargs console=${console},${baudrate} root=${mmcroot} rootwait bootsys=${bootsys} panic=1 ${customargs}'
   sync
 
 This way, you can focus on changing *custom_args* without worrying to always touch
