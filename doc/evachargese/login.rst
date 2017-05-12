@@ -25,6 +25,6 @@ Debug UART after restoring the EVAcharge SE image::
   # reconfigure OpenSSH server via Debian's package management will trigger key re-creation
   dpkg-reconfigure openssh-server
 
-For newer EVAcharge SE factory images (r07 and later), this issue has been fixed
+For newer EVAcharge SE factory images (v1.6 and later), this issue has been fixed
 using an additional boot script: the required SSH host keys are generated
 automatically during the first boot, so no further user action is required.

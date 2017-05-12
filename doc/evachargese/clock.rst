@@ -3,7 +3,7 @@ Clock
 
 After a cold boot the real-time clock (RTC) of the i.MX28 lose its setting and needs to be reinitialized with current time.
 
-New EVAcharge SE factory images (r07 and later) already contains a NTP daemon which could fetch the current time from the internet. But this requires a working network configuration with a gateway and at least 1 DNS server. So please follow the `Debian network documentation`_.
+New EVAcharge SE factory images (v1.6 and later) already contains a NTP daemon which could fetch the current time from the internet. But this requires a working network configuration with a gateway and at least 1 DNS server. So please follow the `Debian network documentation`_.
 
 .. _Debian network documentation: https://wiki.debian.org/NetworkConfiguration
 
