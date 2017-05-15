@@ -35,14 +35,14 @@ cat <<EOL
 EOL
 
 PREFIX="emmc.img"
-FILESIZE=`du -k $IMAGEDIR/$PREFIX.01 | cut -f1`
+FILESIZE=`stat --printf="%s" $IMAGEDIR/$PREFIX.01`
 
 for FILENAME in `ls -1 $IMAGEDIR/$PREFIX* | sort -r`; do
 	BASENAME="${FILENAME##*/}"
 	# assume the first image starts with 01	
 	EXTENSION="${BASENAME##*.}"
 	# we need to take care of the leading zero
-	SEEK=$((10#$EXTENSION * $FILESIZE - $FILESIZE))
+	SEEK=$((10#$EXTENSION * $FILESIZE / 1024 - $FILESIZE / 1024))
 	cat <<EOL
     <CMD type="push" body="pipe dd of=/dev/mmcblk0 seek=$SEEK bs=1k" file="files/$BASENAME">Sending $BASENAME</CMD>
     <CMD type="push" body="frf">Writing $BASENAME</CMD>
