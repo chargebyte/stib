@@ -188,7 +188,7 @@ endif
 	sudo mount -t proc - rootfs/proc
 	sudo chroot rootfs /init-chroot.sh
 	# workarounds to stop some daemons
-	sudo kill -9 $$(ps ax | grep [q]emu-arm-static | awk '{ print $$1 }')
+	-sudo kill -9 $$(ps ax | grep [q]emu-arm-static | awk '{ print $$1 }')
 	sudo umount rootfs/proc
 
 	# cleanup
