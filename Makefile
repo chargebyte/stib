@@ -50,6 +50,8 @@ jessie-requirements:
 	sudo apt-get install -y crossbuild-essential-armel
 
 trusty-requirements:
+xenial-requirements:
+zesty-requirements:
 	sudo apt-get install -y apt-transport-https build-essential make patch multistrap bc binfmt-support libssl-dev qemu-user-static lzop
 	sudo apt-get install -y gcc-arm-linux-gnueabi g++-arm-linux-gnueabi
 	sudo sh -c 'if [ `dpkg -s multistrap | grep Version | cut -d: -f2` = "2.2.0ubuntu1" ]; then \
