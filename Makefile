@@ -19,7 +19,7 @@ ROOTFSSIZE:=$(shell echo $$((640 * 1024 * 1024)))
 endif
 
 ifeq ($(PRODUCT),evachargese)
-ROOTFSSIZE:=$(shell echo $$((640 * 1024 * 1024)))
+ROOTFSSIZE:=$(shell echo $$((1024 * 1024 * 1024)))
 endif
 
 ifeq ($(BL_BOARD),evachargese)
