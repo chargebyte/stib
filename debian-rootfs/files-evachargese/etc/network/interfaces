@@ -7,9 +7,7 @@ auto lo eth0 qca0
 iface lo inet loopback
 
 auto eth0
-iface eth0 inet static
-    address 192.168.37.250
-    netmask 255.255.255.0
+iface eth0 inet dhcp
 
 iface qca0 inet static
     address 192.168.66.2
