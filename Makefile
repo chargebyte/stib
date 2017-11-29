@@ -6,6 +6,11 @@ JOBS ?= $(shell cat /proc/cpuinfo | grep processor | wc -l)
 ifeq ($(PRODUCT),evachargese)
 BL_BOARD ?= evachargese
 PRODUCT_COMMON:=
+else if ($(PRODUCT),tarragon)
+BL_BOARD?=tarragon
+PRODUCT_COMMON:=
+HWREV:=v1
+CROSS_COMPILE:=arm-linux-gnueabihf-
 else
 BL_BOARD ?= duckbill
 PRODUCT_COMMON:=duckbill
@@ -19,6 +24,10 @@ ROOTFSSIZE:=$(shell echo $$((640 * 1024 * 1024)))
 endif
 
 ifeq ($(PRODUCT),evachargese)
+ROOTFSSIZE:=$(shell echo $$((1024 * 1024 * 1024)))
+endif
+
+ifeq ($(PRODUCT),tarragon)
 ROOTFSSIZE:=$(shell echo $$((1024 * 1024 * 1024)))
 endif
 
@@ -124,7 +133,7 @@ imx-bootlets/imx28_ivt_linux.sb: linux/arch/arm/boot/zImage
 
 OPENPLCUTILS_INSTALLDIR:=${CURDIR}/programs/open-plc-utils/rootfs
 $(OPENPLCUTILS_INSTALLDIR):
-	$(MAKE) -C programs/open-plc-utils CROSS="arm-linux-gnueabi-"
+	$(MAKE) -C programs/open-plc-utils CROSS="$(CROSS_COMPILE)"
 	sudo $(MAKE) -C programs/open-plc-utils ROOTFS="$(OPENPLCUTILS_INSTALLDIR)" install
 
 programs: $(OPENPLCUTILS_INSTALLDIR)
@@ -148,14 +157,18 @@ rootfs-clean:
 rootfs:
 	$(MAKE) -C debian-rootfs
 
-install: clean-rootfs $(if $(findstring evacharge,$(PRODUCT)),programs)
+install: clean-rootfs $(if $(findstring evacharge,$(PRODUCT)),programs) $(if $(findstring tarragon,$(PRODUCT)),programs)
 	sudo mkdir -p rootfs
 	sudo cp -a debian-rootfs/rootfs/* rootfs/
 
 	# linux kernel and device tree
 	sudo mkdir -p rootfs/boot
 	sudo cp -av linux/arch/arm/boot/zImage rootfs/boot/
+ifeq ($(PRODUCT),tarragon)
+	sudo cp -av linux/arch/arm/boot/dts/imx6ull-$(BL_BOARD)*.dtb rootfs/boot/
+else
 	sudo cp -av linux/arch/arm/boot/dts/imx28-$(BL_BOARD)*.dtb rootfs/boot/
+endif
 	sudo sh -c 'if [ -d linux-modules/lib/modules ]; then cp -av linux-modules/lib/modules rootfs/lib; fi'
 	sudo chown 0:0 rootfs/boot/*
 	sudo chmod 0644 rootfs/boot/*
@@ -174,7 +187,7 @@ endif
 	sudo sh -c 'if [ -d debian-rootfs/files-$(PRODUCT) ]; then cp -a debian-rootfs/files-$(PRODUCT)/* rootfs-tmp/; fi'
 	# and fold in customer specific files (if present)
 	sudo sh -c 'if [ -d debian-rootfs/files-$(PRODUCT)-custom ]; then cp -a debian-rootfs/files-$(PRODUCT)-custom/* rootfs-tmp/ || true; fi'
-ifeq ($(PRODUCT),evachargese)
+ifneq ($(PRODUCT),duckbill)
 	sudo sh -c 'cp -a programs/open-plc-utils/rootfs/* rootfs-tmp/'
 endif
 	sudo mkdir -p rootfs-tmp/usr/bin/
