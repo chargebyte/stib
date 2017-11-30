@@ -43,6 +43,11 @@ evachargese)
 	exit 0
 	;;
 
+tarragon)
+	echo "Tarragon: no fixup required." >&2
+	exit 0
+	;;
+
 esac
 
 [ -n "$FDT_FILE" ] || {

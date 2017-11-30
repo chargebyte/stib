@@ -1,19 +1,36 @@
 PRODUCT ?= duckbill
 HWREV ?= v2
-CROSS_COMPILE ?= arm-linux-gnueabi-
+
 JOBS ?= $(shell cat /proc/cpuinfo | grep processor | wc -l)
 
 ifeq ($(PRODUCT),evachargese)
-BL_BOARD ?= evachargese
-PRODUCT_COMMON:=
-else if ($(PRODUCT),tarragon)
-BL_BOARD?=tarragon
-PRODUCT_COMMON:=
-HWREV:=v1
-CROSS_COMPILE:=arm-linux-gnueabihf-
+CROSS_COMPILE := arm-linux-gnueabi-
+BL_BOARD := evachargese
+BL_SUFFIX := sb
+DTS_NAME := imx28-evachargese
+KERNEL_CFG := evachargese
+PRODUCT_COMMON :=
+PROGRAMS := open-plc-utils
+
+else ifeq ($(PRODUCT),tarragon)
+CROSS_COMPILE := arm-linux-gnueabihf-
+BL_BOARD := mx6ull_14x14_evk_emmc
+BL_SUFFIX := imx
+DTS_NAME := imx6ull-14x14-evk
+KERNEL_CFG := tarragon
+PRODUCT_COMMON :=
+HWREV := v1
+PROGRAMS := open-plc-utils
+
 else
-BL_BOARD ?= duckbill
-PRODUCT_COMMON:=duckbill
+CROSS_COMPILE := arm-linux-gnueabi-
+BL_BOARD := duckbill
+BL_SUFFIX := sb
+DTS_NAME := imx28-duckbill
+KERNEL_CFG := duckbill
+PRODUCT_COMMON := duckbill
+PROGRAMS :=
+
 endif
 
 ROOTFSSIZE:=$(shell echo $$((384 * 1024 * 1024)))
@@ -34,7 +51,7 @@ endif
 ifeq ($(BL_BOARD),evachargese)
 BOOTSTREAM:=imx-bootlets/imx28_ivt_linux.sb
 else
-BOOTSTREAM:=u-boot/u-boot.sb
+BOOTSTREAM:=u-boot/u-boot.$(BL_SUFFIX)
 endif
 
 TOOLS:=${CURDIR}/tools
@@ -71,7 +88,7 @@ prepare:
 	git submodule init
 	git submodule update
 
-tools: tools/fsl-imx-uuc/sdimage tools/ptgen/ptgen tools/elftosb/elftosb
+tools: $(if $(BL_SUFFIX),sb,tools/fsl-imx-uuc/sdimage tools/elftosb/elftosb) tools/ptgen/ptgen
 
 tools/fsl-imx-uuc/sdimage: tools/fsl-imx-uuc/sdimage.c tools/fsl-imx-uuc/Makefile
 	$(MAKE) -C tools/fsl-imx-uuc
@@ -89,19 +106,19 @@ tools-clean:
 	$(MAKE) -C tools/elftosb clean
 
 .PHONY: u-boot uboot
-u-boot uboot: u-boot/u-boot.sb
+u-boot uboot: u-boot/u-boot.$(BL_SUFFIX)
 
-u-boot/u-boot.sb:
+u-boot/u-boot.$(BL_SUFFIX):
 	$(MAKE) -C u-boot $(BL_BOARD)_defconfig CROSS_COMPILE="$(CROSS_COMPILE)"
 	$(MAKE) -C u-boot -j $(JOBS) env
 	ln -sf fw_printenv u-boot/tools/env/fw_setenv
-	$(MAKE) -C u-boot -j $(JOBS) u-boot.sb CROSS_COMPILE="$(CROSS_COMPILE)"
+	$(MAKE) -C u-boot -j $(JOBS) u-boot.$(BL_SUFFIX) CROSS_COMPILE="$(CROSS_COMPILE)"
 
 linux: linux/arch/arm/boot/zImage
 
 .PHONY: linux/arch/arm/boot/zImage
 linux/arch/arm/boot/zImage:
-	cat linux-configs/$(BL_BOARD) > linux/.config
+	cat linux-configs/$(KERNEL_CFG) > linux/.config
 	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" olddefconfig
 	$(MAKE) -C linux -j $(JOBS) ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)"
 	-$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" \
@@ -112,10 +129,10 @@ linux-clean:
 	rm -f linux/arch/arm/boot/zImage
 
 linux-menuconfig:
-	cat linux-configs/$(BL_BOARD) > linux/.config
+	cat linux-configs/$(KERNEL_CFG) > linux/.config
 	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" menuconfig
 	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" savedefconfig
-	cat linux/defconfig > linux-configs/$(BL_BOARD)
+	cat linux/defconfig > linux-configs/$(KERNEL_CFG)
 	rm linux/defconfig
 
 dtbs:
@@ -136,7 +153,11 @@ $(OPENPLCUTILS_INSTALLDIR):
 	$(MAKE) -C programs/open-plc-utils CROSS="$(CROSS_COMPILE)"
 	sudo $(MAKE) -C programs/open-plc-utils ROOTFS="$(OPENPLCUTILS_INSTALLDIR)" install
 
-programs: $(OPENPLCUTILS_INSTALLDIR)
+.PHONY: open-plc-utils
+open-plc-utils: $(OPENPLCUTILS_INSTALLDIR)
+
+.PHONY: programs
+programs: $(PROGRAMS)
 
 .PHONY: programs-clean
 programs-clean:
@@ -157,18 +178,14 @@ rootfs-clean:
 rootfs:
 	$(MAKE) -C debian-rootfs
 
-install: clean-rootfs $(if $(findstring evacharge,$(PRODUCT)),programs) $(if $(findstring tarragon,$(PRODUCT)),programs)
+install: clean-rootfs programs
 	sudo mkdir -p rootfs
 	sudo cp -a debian-rootfs/rootfs/* rootfs/
 
 	# linux kernel and device tree
 	sudo mkdir -p rootfs/boot
 	sudo cp -av linux/arch/arm/boot/zImage rootfs/boot/
-ifeq ($(PRODUCT),tarragon)
-	sudo cp -av linux/arch/arm/boot/dts/imx6ull-$(BL_BOARD)*.dtb rootfs/boot/
-else
-	sudo cp -av linux/arch/arm/boot/dts/imx28-$(BL_BOARD)*.dtb rootfs/boot/
-endif
+	sudo cp -av linux/arch/arm/boot/dts/$(DTS_NAME)*.dtb rootfs/boot/
 	sudo sh -c 'if [ -d linux-modules/lib/modules ]; then cp -av linux-modules/lib/modules rootfs/lib; fi'
 	sudo chown 0:0 rootfs/boot/*
 	sudo chmod 0644 rootfs/boot/*
@@ -187,7 +204,7 @@ endif
 	sudo sh -c 'if [ -d debian-rootfs/files-$(PRODUCT) ]; then cp -a debian-rootfs/files-$(PRODUCT)/* rootfs-tmp/; fi'
 	# and fold in customer specific files (if present)
 	sudo sh -c 'if [ -d debian-rootfs/files-$(PRODUCT)-custom ]; then cp -a debian-rootfs/files-$(PRODUCT)-custom/* rootfs-tmp/ || true; fi'
-ifneq ($(PRODUCT),duckbill)
+ifeq ($(PRODUCT),evachargese)
 	sudo sh -c 'cp -a programs/open-plc-utils/rootfs/* rootfs-tmp/'
 endif
 	sudo mkdir -p rootfs-tmp/usr/bin/
@@ -237,7 +254,7 @@ images/sdcard.img: images/rootfs.img
 disk-image: images/sdcard.img
 	rm -f images/ucl.xml images/emmc.img.*
 	split -b $(ROOTFSCHUNKSIZE) --numeric-suffixes=1 images/sdcard.img images/emmc.img.
-ifeq ($(BL_BOARD),duckbill)
+ifeq ($(PRODUCT),duckbill)
 	gzip -9 images/emmc.img.*
 else
 	tools/gen_ucl_xml.sh images/ > images/ucl.xml
