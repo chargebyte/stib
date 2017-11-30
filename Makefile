@@ -88,7 +88,7 @@ prepare:
 	git submodule init
 	git submodule update
 
-tools: $(if $(BL_SUFFIX),sb,tools/fsl-imx-uuc/sdimage tools/elftosb/elftosb) tools/ptgen/ptgen
+tools: $(if $(findstring sb,$(BL_SUFFIX)),tools/fsl-imx-uuc/sdimage tools/elftosb/elftosb) tools/ptgen/ptgen
 
 tools/fsl-imx-uuc/sdimage: tools/fsl-imx-uuc/sdimage.c tools/fsl-imx-uuc/Makefile
 	$(MAKE) -C tools/fsl-imx-uuc
