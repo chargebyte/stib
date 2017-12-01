@@ -249,8 +249,12 @@ images/rootfs.img:
 	rm -f images/mountpoint
 
 images/sdcard.img: images/rootfs.img
+ifeq ($(PRODUCT),tarragon)
+	sh tools/gen_emmc_3x_ext4.sh images/sdcard.img $(BOOTSTREAM) images/rootfs.img $$(($(ROOTFSSIZE) / (1024 * 1024)))
+else
 	sh tools/gen_sdcard_ext4.sh images/sdcard.img $(BOOTSTREAM) images/rootfs.img $$(($(ROOTFSSIZE) / (1024 * 1024)))
 	sh tools/fixup_fdt_file.sh tools/fw_env.config $(PRODUCT) $(HWREV)
+endif
 
 disk-image: images/sdcard.img
 	rm -f images/ucl.xml images/emmc.img.*
