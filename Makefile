@@ -72,13 +72,14 @@ jessie-requirements:
 	sudo sh -c 'echo "deb http://emdebian.org/tools/debian/ jessie main" > /etc/apt/sources.list.d/crosstools.list'
 	curl http://emdebian.org/tools/debian/emdebian-toolchain-archive.key | sudo apt-key add -
 	sudo dpkg --add-architecture armel
+	sudo dpkg --add-architecture armhf
 	sudo apt-get update
-	sudo apt-get install -y crossbuild-essential-armel
+	sudo apt-get install -y crossbuild-essential-armel crossbuild-essential-armhf
 
 .PHONY: trusty-requirements xenial-requirements zesty-requirements
 trusty-requirements xenial-requirements zesty-requirements:
 	sudo apt-get install -y apt-transport-https build-essential make patch multistrap bc binfmt-support libssl-dev qemu-user-static lzop
-	sudo apt-get install -y gcc-arm-linux-gnueabi g++-arm-linux-gnueabi
+	sudo apt-get install -y gcc-arm-linux-gnueabi gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf
 	sudo sh -c 'if [ `dpkg -s multistrap | grep Version | cut -d: -f2` = "2.2.0ubuntu1" ]; then \
 	        cp /usr/sbin/multistrap /usr/sbin/multistrap.orig; \
 	        sed -i -e "s/-y \$$forceyes install/-y install/" /usr/sbin/multistrap; \
