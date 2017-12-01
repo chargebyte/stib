@@ -11,6 +11,7 @@ DTS_NAME := imx28-evachargese
 KERNEL_CFG := evachargese
 PRODUCT_COMMON :=
 PROGRAMS := open-plc-utils
+PLATFORM := armel
 
 else ifeq ($(PRODUCT),tarragon)
 CROSS_COMPILE := arm-linux-gnueabihf-
@@ -21,6 +22,7 @@ KERNEL_CFG := tarragon
 PRODUCT_COMMON :=
 HWREV := v1
 PROGRAMS := open-plc-utils
+PLATFORM := armhf
 
 else
 CROSS_COMPILE := arm-linux-gnueabi-
@@ -30,6 +32,7 @@ DTS_NAME := imx28-duckbill
 KERNEL_CFG := duckbill
 PRODUCT_COMMON := duckbill
 PROGRAMS :=
+PLATFORM := armel
 
 endif
 
@@ -197,6 +200,7 @@ install: clean-rootfs programs
 	# fold in root fs overlay
 	sudo mkdir rootfs-tmp
 	sudo cp -a debian-rootfs/files/* rootfs-tmp/
+	sudo cp -a debian-rootfs/files-$(PLATFORM)/* rootfs-tmp/
 	# fold in common files for this product
 ifneq ($(PRODUCT_COMMON),)
 	sudo cp -a debian-rootfs/files-$(PRODUCT_COMMON)-common/* rootfs-tmp/

@@ -1,0 +1,26 @@
+#!/bin/sh
+
+export LC_ALL=C LANGUAGE=C LANG=C
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+mount -t proc - /proc
+mount / -o remount,rw
+
+if [ -x /sbin/adjust-data-partition ]; then
+	adjust-data-partition
+	touch /resizefs
+	rm -f /sbin/adjust-data-partition
+	sync
+	reboot -f
+	while true; do
+		:
+	done
+fi
+
+if [ -e /resizefs ]; then
+	mkfs.ext4 /dev/mmcblk0p3
+	rm -f /resizefs
+fi
+
+mv /sbin/init.orig /sbin/init
+exec /sbin/init
