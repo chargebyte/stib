@@ -79,7 +79,7 @@ jessie-requirements:
 .PHONY: trusty-requirements xenial-requirements zesty-requirements
 trusty-requirements xenial-requirements zesty-requirements:
 	sudo apt-get install -y apt-transport-https build-essential make patch multistrap bc binfmt-support libssl-dev qemu-user-static lzop
-	sudo apt-get install -y gcc-arm-linux-gnueabi gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf
+	sudo apt-get install -y gcc-arm-linux-gnueabi gcc-arm-linux-gnueabihf g++-arm-linux-gnueabi g++-arm-linux-gnueabihf
 	sudo sh -c 'if [ `dpkg -s multistrap | grep Version | cut -d: -f2` = "2.2.0ubuntu1" ]; then \
 	        cp /usr/sbin/multistrap /usr/sbin/multistrap.orig; \
 	        sed -i -e "s/-y \$$forceyes install/-y install/" /usr/sbin/multistrap; \
