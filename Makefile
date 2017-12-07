@@ -17,7 +17,7 @@ else ifeq ($(PRODUCT),tarragon)
 CROSS_COMPILE := arm-linux-gnueabihf-
 BL_BOARD := tarragon
 BL_SUFFIX := imx
-DTS_NAME := imx6ull-14x14-evk
+DTS_NAME := imx6ull-tarragon
 KERNEL_CFG := tarragon
 PRODUCT_COMMON :=
 HWREV := v1
