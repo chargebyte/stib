@@ -15,7 +15,7 @@ PLATFORM := armel
 
 else ifeq ($(PRODUCT),tarragon)
 CROSS_COMPILE := arm-linux-gnueabihf-
-BL_BOARD := mx6ull_14x14_evk_emmc
+BL_BOARD := tarragon
 BL_SUFFIX := imx
 DTS_NAME := imx6ull-14x14-evk
 KERNEL_CFG := tarragon
