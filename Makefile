@@ -128,6 +128,8 @@ linux/arch/arm/boot/zImage:
 	-$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" \
 	        INSTALL_MOD_PATH="../linux-modules" modules_install
 	rm -f linux-modules/lib/modules/*/build linux-modules/lib/modules/*/source
+	-$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" \
+		INSTALL_FW_PATH="../linux-firmware" firmware_install
 
 linux-clean:
 	rm -f linux/arch/arm/boot/zImage
@@ -191,9 +193,10 @@ install: clean-rootfs programs
 	sudo cp -av linux/arch/arm/boot/zImage rootfs/boot/
 	sudo cp -av linux/arch/arm/boot/dts/$(DTS_NAME)*.dtb rootfs/boot/
 	sudo sh -c 'if [ -d linux-modules/lib/modules ]; then cp -av linux-modules/lib/modules rootfs/lib; fi'
+	sudo sh -c 'if [ -d linux-firmware/lib/firmware ]; then cp -av linux-firmware/lib/firmware rootfs/lib; fi'
 	sudo chown 0:0 rootfs/boot/*
 	sudo chmod 0644 rootfs/boot/*
-	-sudo chown 0:0 -R rootfs/lib/modules
+	-sudo chown 0:0 -R rootfs/lib/
 	-sudo sh -c 'find rootfs/lib/modules -type d -exec chmod 0755 {} \;'
 	-sudo sh -c 'find rootfs/lib/modules -type f -exec chmod 0644 {} \;'
 
@@ -277,4 +280,5 @@ mrproper:
 .PHONY: distclean
 distclean: mrproper clean-rootfs rootfs-clean tools-clean
 	rm -rf linux-modules
+	rm -rf linux-firmware
 	rm -rf images

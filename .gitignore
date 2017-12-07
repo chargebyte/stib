@@ -4,3 +4,4 @@ rootfs
 tools/ptgen/ptgen
 images
 linux-modules
+linux-firmware
