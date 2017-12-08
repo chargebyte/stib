@@ -265,12 +265,24 @@ endif
 
 disk-image: images/sdcard.img
 	rm -f images/ucl.xml images/emmc.img.*
+ifeq ($(PLATFORM),armel)
 	split -b $(ROOTFSCHUNKSIZE) --numeric-suffixes=1 images/sdcard.img images/emmc.img.
 ifeq ($(PRODUCT),duckbill)
 	gzip -9 images/emmc.img.*
 else
 	tools/gen_ucl_xml.sh images/ > images/ucl.xml
 endif
+endif
+
+.PHONY: mfgtool-profile
+mfgtool-profile: images/sdcard.img
+	rm -rf images/mfgtool
+	cp -a mfgtool images/mfgtool
+	split -b $(ROOTFSCHUNKSIZE) --numeric-suffixes=1 images/sdcard.img "images/mfgtool/Profiles/$(PRODUCT)/OS Firmware/files/emmc.img."
+	cp $(BOOTSTREAM) "images/mfgtool/Profiles/$(PRODUCT)/OS Firmware/firmware"
+	cp -av linux/arch/arm/boot/zImage "images/mfgtool/Profiles/$(PRODUCT)/OS Firmware/firmware"
+	cp -av linux/arch/arm/boot/dts/$(DTS_NAME).dtb "images/mfgtool/Profiles/$(PRODUCT)/OS Firmware/firmware"
+	tools/gen_ucl2_xml.sh "images/mfgtool/Profiles/$(PRODUCT)/OS Firmware/files" $(DTS_NAME).dtb > "images/mfgtool/Profiles/$(PRODUCT)/OS Firmware/ucl2.xml"
 
 .PHONY: mrproper
 mrproper:
