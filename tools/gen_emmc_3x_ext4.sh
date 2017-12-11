@@ -30,7 +30,7 @@ sect=63
 }
 
 # we assume that there is still enough room for a 1G data partition
-set `ptgen -o $OUTPUT -h $head -s $sect -a 0 -l 4096 -p ${ROOTFSSIZE} -p ${ROOTFSSIZE} -p 1G`
+set `ptgen -o $OUTPUT -h $head -s $sect -a 0 -l 4096 -p ${ROOTFSSIZE}M -p ${ROOTFSSIZE}M -p 1G`
 
 ROOTFS1OFFSET="$(($1 / 512))"
 ROOTFS1SIZE="$(($2 / 512))"
