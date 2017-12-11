@@ -23,6 +23,7 @@ PRODUCT_COMMON :=
 HWREV := v1
 PROGRAMS := open-plc-utils
 PLATFORM := armhf
+MFGTOOL_PATH := mfgtool-$(PRODUCT)
 
 else
 CROSS_COMPILE := arm-linux-gnueabi-
@@ -276,13 +277,19 @@ endif
 
 .PHONY: mfgtool-profile
 mfgtool-profile: images/sdcard.img
-	rm -rf images/mfgtool
-	cp -a mfgtool images/mfgtool
-	split -b $(ROOTFSCHUNKSIZE) --numeric-suffixes=1 images/sdcard.img "images/mfgtool/Profiles/$(PRODUCT)/OS Firmware/files/emmc.img."
-	cp $(BOOTSTREAM) "images/mfgtool/Profiles/$(PRODUCT)/OS Firmware/firmware"
-	cp -av linux/arch/arm/boot/zImage "images/mfgtool/Profiles/$(PRODUCT)/OS Firmware/firmware"
-	cp -av linux/arch/arm/boot/dts/$(DTS_NAME).dtb "images/mfgtool/Profiles/$(PRODUCT)/OS Firmware/firmware"
-	tools/gen_ucl2_xml.sh "images/mfgtool/Profiles/$(PRODUCT)/OS Firmware/files" $(DTS_NAME).dtb > "images/mfgtool/Profiles/$(PRODUCT)/OS Firmware/ucl2.xml"
+	rm -rf "images/$(MFGTOOL_PATH)"
+	cp -a mfgtool "images/$(MFGTOOL_PATH)"
+	split -b $(ROOTFSCHUNKSIZE) --numeric-suffixes=1 images/sdcard.img "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/files/emmc.img."
+	cp "$(BOOTSTREAM)" "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/firmware"
+	cp -av linux/arch/arm/boot/zImage "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/firmware"
+	cp -av linux/arch/arm/boot/dts/$(DTS_NAME).dtb "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/firmware"
+	tools/gen_ucl2_xml.sh "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/files" $(DTS_NAME).dtb > "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/ucl2.xml"
+
+images/mfgtool-$(PRODUCT).zip: mfgtool-profile
+	cd images && zip -r "$(shell basename "$@")" "$(MFGTOOL_PATH)"
+
+.PHONY: mfgtool-image
+mfgtool-image: images/mfgtool-$(PRODUCT).zip
 
 .PHONY: mrproper
 mrproper:
