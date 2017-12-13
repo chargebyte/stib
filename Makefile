@@ -24,6 +24,7 @@ HWREV := v1
 PROGRAMS := open-plc-utils
 PLATFORM := armhf
 MFGTOOL_PATH := mfgtool-$(PRODUCT)
+MFGTOOL_CFG := tarragon-mfgtool
 
 else
 CROSS_COMPILE := arm-linux-gnueabi-
@@ -278,6 +279,11 @@ endif
 
 .PHONY: mfgtool-profile
 mfgtool-profile: images/sdcard.img
+ifneq ($(MFGTOOL_CFG),)
+	cat linux-configs/$(MFGTOOL_CFG) > linux/.config
+	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" olddefconfig
+	$(MAKE) -C linux -j $(JOBS) ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)"
+endif
 	rm -rf "images/$(MFGTOOL_PATH)"
 	cp -a mfgtool "images/$(MFGTOOL_PATH)"
 	split -b $(ROOTFSCHUNKSIZE) --numeric-suffixes=1 images/sdcard.img "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/files/emmc.img."
