@@ -289,8 +289,8 @@ endif
 	split -b $(ROOTFSCHUNKSIZE) --numeric-suffixes=1 images/sdcard.img "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/files/emmc.img."
 	cp "$(BOOTSTREAM)" "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/firmware"
 	cp -av linux/arch/arm/boot/zImage "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/firmware"
-	cp -av linux/arch/arm/boot/dts/$(DTS_NAME).dtb "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/firmware"
-	tools/gen_ucl2_xml.sh "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/files" $(DTS_NAME).dtb > "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/ucl2.xml"
+	cp -av linux/arch/arm/boot/dts/$(DTS_NAME)-mfg.dtb "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/firmware"
+	tools/gen_ucl2_xml.sh "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/files" $(DTS_NAME)-mfg.dtb > "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/ucl2.xml"
 
 images/mfgtool-$(PRODUCT).zip: mfgtool-profile
 	cd images && zip -r "$(shell basename "$@")" "$(MFGTOOL_PATH)"
