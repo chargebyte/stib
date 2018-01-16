@@ -45,7 +45,7 @@ echo "HW_OCOTP_MAC0: $reg0"
 echo $reg0 > /sys/fsl_otp/HW_OCOTP_MAC0
 sleep 1
 echo "HW_OCOTP_MAC1: $reg1"
-echo $reg0 > /sys/fsl_otp/HW_OCOTP_MAC1
+echo $reg1 > /sys/fsl_otp/HW_OCOTP_MAC1
 sleep 1
 echo "HW_OCOTP_MAC2: $reg2"
-echo $reg0 > /sys/fsl_otp/HW_OCOTP_MAC2
+echo $reg2 > /sys/fsl_otp/HW_OCOTP_MAC2
