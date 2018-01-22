@@ -24,7 +24,7 @@ if [ "$verify" == "" ]; then
 	exit 1
 fi
 
-if [ "$verify" == "0x0" ]; then
+if [ "$verify" != "0x0" ]; then
 	echo "Ethernet MAC address already burned"
 	exit 1
 fi
@@ -54,9 +54,9 @@ if [ $# -gt 2 ]; then
 	verify=`cat /sys/fsl_otp/HW_OCOTP_GP30 2>/dev/null`
 
 	if [ "$verify" == "0x0" ]; then
-		echo "QCA7000 MAC address already burned"
-	else
 		reg3="0x${mac3:6:2}${mac3:9:2}${mac3:12:2}${mac3:15:2}"
+	else
+		echo "QCA7000 MAC address already burned"
 	fi
 fi
 
