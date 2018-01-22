@@ -279,17 +279,19 @@ endif
 
 .PHONY: mfgtool-profile
 mfgtool-profile: images/sdcard.img
+	rm -rf "images/$(MFGTOOL_PATH)"
+	cp -a mfgtool "images/$(MFGTOOL_PATH)"
+	mkdir -p "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/files/"
+	cp -av linux/arch/arm/boot/zImage "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/firmware"
+	cp -av linux/arch/arm/boot/dts/$(DTS_NAME)-*.dtb "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/firmware"
 ifneq ($(MFGTOOL_CFG),)
 	cat linux-configs/$(MFGTOOL_CFG) > linux/.config
 	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" olddefconfig
 	$(MAKE) -C linux -j $(JOBS) ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)"
 endif
-	rm -rf "images/$(MFGTOOL_PATH)"
-	cp -a mfgtool "images/$(MFGTOOL_PATH)"
 	split -b $(ROOTFSCHUNKSIZE) --numeric-suffixes=1 images/sdcard.img "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/files/emmc.img."
 	cp "$(BOOTSTREAM)" "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/firmware"
-	cp -av linux/arch/arm/boot/zImage "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/firmware"
-	cp -av linux/arch/arm/boot/dts/$(DTS_NAME)-mfg.dtb "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/firmware"
+	cp -av linux/arch/arm/boot/zImage "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/firmware/zImage_mfgtool"
 	tools/gen_ucl2_xml.sh "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/files" $(DTS_NAME)-mfg.dtb > "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/ucl2.xml"
 
 images/mfgtool-$(PRODUCT).zip: mfgtool-profile
