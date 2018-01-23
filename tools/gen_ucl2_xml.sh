@@ -36,6 +36,7 @@ cat <<EOL
         loadSection="OTH" setSection="OTH" HasFlashHeader="FALSE">Loading Device Tree Binary</CMD>
     <CMD state="BootStrap" type="jump">Starting Linux</CMD>
 
+    <!--
     <CMD state="Updater" type="push" body="$ echo none  > /sys/class/leds/*:red:*/trigger">Switch LED</CMD>
     <CMD state="Updater" type="push" body="$ echo 0     > /sys/class/leds/*:red:*/brightness">Switch LED</CMD>
 
@@ -44,8 +45,9 @@ cat <<EOL
 
     <CMD state="Updater" type="push" body="$ echo none  > /sys/class/leds/*:green:*/trigger">Switch LED</CMD>
     <CMD state="Updater" type="push" body="$ echo 0     > /sys/class/leds/*:green:*/brightness">Switch LED</CMD>
+    -->
 
-    <CMD state="Updater" type="push" body="mknod block,mmcblk0,/dev/mmcblk0,block">Creating Block Device for eMMC</CMD>
+    <CMD state="Updater" type="push" body="mknod block,mmcblk1,/dev/mmcblk1,block">Creating Block Device for eMMC</CMD>
 
 EOL
 
@@ -62,13 +64,14 @@ for FILENAME in `cd "$IMAGEDIR"; ls -1 $PREFIX* | sort -r`; do
 	SEEK=$((10#$EXTENSION * $FILESIZE / $BLOCKSIZE - $FILESIZE / $BLOCKSIZE))
 
 	cat <<-EOL
-	    <CMD state="Updater" type="push" body="pipe dd of=/dev/mmcblk0 seek=$SEEK bs=$BLOCKSIZE" file="files/$BASENAME">Sending $EXTENSION/$TOTALCOUNT</CMD>
+	    <CMD state="Updater" type="push" body="pipe dd of=/dev/mmcblk1 seek=$SEEK bs=$BLOCKSIZE" file="files/$BASENAME">Sending $EXTENSION/$TOTALCOUNT</CMD>
 	    <CMD state="Updater" type="push" body="frf">Writing $EXTENSION/$TOTALCOUNT</CMD>
 	EOL
 done
 
 cat <<EOL
 
+    <!--
     <CMD state="Updater" type="push" body="$ echo none  > /sys/class/leds/*:red:*/trigger">Switch LED</CMD>
     <CMD state="Updater" type="push" body="$ echo 0     > /sys/class/leds/*:red:*/brightness">Switch LED</CMD>
 
@@ -77,6 +80,7 @@ cat <<EOL
 
     <CMD state="Updater" type="push" body="$ echo none  > /sys/class/leds/*:green:*/trigger">Switch LED</CMD>
     <CMD state="Updater" type="push" body="$ echo 1     > /sys/class/leds/*:green:*/brightness">Switch LED</CMD>
+    -->
 
     <CMD state="Updater" type="push" body="$ echo Update complete!">Done</CMD>
   </LIST>
