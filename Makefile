@@ -241,7 +241,7 @@ clean-rootfs:
 	sudo rm -rf rootfs rootfs-tmp
 
 images-clean clean-images:
-	rm -f images/*
+	rm -f images/*.*
 
 rootfs-image: images/rootfs.img
 .PHONY: images/rootfs.img
