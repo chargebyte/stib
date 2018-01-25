@@ -5,7 +5,7 @@ export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 # The data partition offset must be equal to the value from gen_emmc_3x_ext4.sh
 
-cat <<EOF | fdisk /dev/mmcblk0
+cat <<EOF | fdisk /dev/mmcblk1
 p
 d
 3
