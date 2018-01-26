@@ -28,7 +28,7 @@ cat <<EOL
 
   <LIST name="eMMC" desc="Burn Linux Firmware to eMMC">
     <CMD state="BootStrap" type="boot" body="BootStrap" file ="firmware/u-boot.imx">Loading U-Boot</CMD>
-    <CMD state="BootStrap" type="load" file="firmware/zImage" address="0x80800000"
+    <CMD state="BootStrap" type="load" file="firmware/zImage_mfgtool" address="0x80800000"
         loadSection="OTH" setSection="OTH" HasFlashHeader="FALSE">Loading Kernel</CMD>
     <CMD state="BootStrap" type="load" file="firmware/fsl-image-mfgtool-initramfs-imx_mfgtools.cpio.gz.u-boot" address="0x83800000"
         loadSection="OTH" setSection="OTH" HasFlashHeader="FALSE">Loading Initramfs</CMD>
