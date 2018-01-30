@@ -214,7 +214,7 @@ endif
 	sudo sh -c 'if [ -d debian-rootfs/files-$(PRODUCT) ]; then cp -a debian-rootfs/files-$(PRODUCT)/* rootfs-tmp/; fi'
 	# and fold in customer specific files (if present)
 	sudo sh -c 'if [ -d debian-rootfs/files-$(PRODUCT)-custom ]; then cp -a debian-rootfs/files-$(PRODUCT)-custom/* rootfs-tmp/ || true; fi'
-ifeq ($(findstring open-plc-utils,$(PROGRAMS),open-plc-utils)
+ifeq ($(findstring open-plc-utils,$(PROGRAMS)),open-plc-utils)
 	sudo sh -c 'cp -a $(OPENPLCUTILS_INSTALLDIR)/* rootfs-tmp/'
 endif
 	sudo mkdir -p rootfs-tmp/usr/bin/
