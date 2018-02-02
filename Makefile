@@ -306,7 +306,7 @@ mrproper:
 	-make -C linux mrproper
 
 .PHONY: distclean
-distclean: mrproper clean-rootfs rootfs-clean tools-clean
+distclean: mrproper clean-rootfs rootfs-clean tools-clean programs-clean
 	rm -rf linux-modules
 	rm -rf linux-firmware
 	rm -rf images
