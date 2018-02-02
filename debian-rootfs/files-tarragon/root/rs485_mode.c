@@ -20,7 +20,7 @@ int main( int argc, char **argv )
         unsigned int i;
 
         if( argc < 2 ) {
-                printf("Usage:  %s [port name] [0|1]\n", argv[0]);
+                printf("Usage:  %s [port name] [H|L|O]\n", argv[0]);
                 exit(0);
         }
 
@@ -38,17 +38,27 @@ int main( int argc, char **argv )
 
         if (ioctl (fd, TIOCGRS485, &rs485conf) < 0) {
                 fprintf( stderr, "Error reading ioctl port (%d): %s\n",  errno, strerror( errno ));
-        }
-
-        printf("Port currently RS485 mode is %s\n", (rs485conf.flags & SER_RS485_ENABLED) ? "set" : "NOT set");
+        } else {
+	        printf("Port currently RS485 mode is %s, RTS: active %s\n",
+			(rs485conf.flags & SER_RS485_ENABLED) ? "set" : "NOT set",
+			(rs485conf.flags & SER_RS485_RTS_ON_SEND) ? "high" : "low");
+	}
 
 	if ( argc > 2 ) {
-		if( atoi( argv[2] ) ) {
-		        printf("RS485 mode will be SET\n");
-		        rs485conf.flags |= SER_RS485_ENABLED | SER_RS485_RTS_ON_SEND;
-		} else {
-		        printf("RS485 mode will be UNSET\n");
-		        rs485conf.flags &= ~SER_RS485_ENABLED;
+		switch ( argv[2][0] ) {
+			case 'H':
+				printf("RS485 mode will be SET (RTS: active high)\n");
+				rs485conf.flags |= SER_RS485_ENABLED | SER_RS485_RTS_ON_SEND;
+				break;
+			case 'L':
+				printf("RS485 mode will be SET (RTS: active low)\n");
+				rs485conf.flags |= SER_RS485_ENABLED;
+				rs485conf.flags &= ~SER_RS485_RTS_ON_SEND;
+				break;
+			default:
+				printf("RS485 mode will be UNSET\n");
+				rs485conf.flags &= ~( SER_RS485_ENABLED | SER_RS485_RTS_ON_SEND );
+				break;
 		}
 
 		if (ioctl (fd, TIOCSRS485, &rs485conf) < 0) {
