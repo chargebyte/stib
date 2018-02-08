@@ -18,7 +18,7 @@ if [ -x /sbin/adjust-data-partition ]; then
 fi
 
 if [ -e /resizefs ]; then
-	mkfs.ext4 /dev/mmcblk1p3
+	mkfs.ext4 -F -F /dev/mmcblk1p3
 	rm -f /resizefs
 fi
 
