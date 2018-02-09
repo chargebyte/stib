@@ -195,7 +195,7 @@ install: clean-rootfs programs
 	sudo cp -av linux/arch/arm/boot/zImage rootfs/boot/
 	sudo cp -av linux/arch/arm/boot/dts/$(DTS_NAME)*.dtb rootfs/boot/
 	sudo sh -c 'if [ -d linux-modules/lib/modules ]; then cp -av linux-modules/lib/modules rootfs/lib; fi'
-	sudo sh -c 'if [ -d linux-firmware/lib/firmware ]; then cp -av linux-firmware/lib/firmware rootfs/lib; fi'
+	sudo sh -c 'if [ -d linux-firmware ]; then cp -av linux-firmware rootfs/lib/firmware; fi'
 	sudo chown 0:0 rootfs/boot/*
 	sudo chmod 0644 rootfs/boot/*
 	-sudo chown 0:0 -R rootfs/lib/
