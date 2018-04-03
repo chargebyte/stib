@@ -13,9 +13,16 @@ IMAGEDIR="$1"
 # Make sure this is in sync with profile.ini
 SECTION="Linux"
 
-if [ ! -f $IMAGEDIR/emmc.img.01 ]; then
+if [ ! -f $IMAGEDIR/emmc.img.01 -a ! -f $IMAGEDIR/emmc.img.01.gz ]; then
 	echo "ERROR: No image file found"
 	exit 1
+fi
+
+UNCOMPRESS=""
+SUFFIX=""
+if [ -f $IMAGEDIR/emmc.img.01.gz ]; then
+	UNCOMPRESS="gzip -dc | "
+	SUFFIX=".gz"
 fi
 
 cat <<EOL
@@ -35,16 +42,18 @@ cat <<EOL
 EOL
 
 PREFIX="emmc.img"
-FILESIZE=`stat --printf="%s" $IMAGEDIR/$PREFIX.01`
+FILESIZE=`stat --printf="%s" $IMAGEDIR/$PREFIX.01$SUFFIX`
 
-for FILENAME in `ls -1 $IMAGEDIR/$PREFIX* | sort -r`; do
+for FILENAME in `ls -1 $IMAGEDIR/$PREFIX*$SUFFIX | sort -r`; do
 	BASENAME="${FILENAME##*/}"
-	# assume the first image starts with 01	
+	# strip off suffix if given
+	[ -n "$SUFFIX" ] && BASENAME="${BASENAME%%$SUFFIX}"
+	# assume the first image starts with 01
 	EXTENSION="${BASENAME##*.}"
 	# we need to take care of the leading zero
-	SEEK=$((10#$EXTENSION * $FILESIZE / 1024 - $FILESIZE / 1024))
+	SEEK=$((16#$EXTENSION * $FILESIZE / 1024 - $FILESIZE / 1024))
 	cat <<EOL
-    <CMD type="push" body="pipe dd of=/dev/mmcblk0 seek=$SEEK bs=1k" file="files/$BASENAME">Sending $BASENAME</CMD>
+    <CMD type="push" body="pipe ${UNCOMPRESS}dd of=/dev/mmcblk0 seek=$SEEK bs=1k" file="files/$BASENAME">Sending $BASENAME</CMD>
     <CMD type="push" body="frf">Writing $BASENAME</CMD>
 EOL
 done
