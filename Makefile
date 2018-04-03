@@ -5,7 +5,7 @@ JOBS ?= $(shell cat /proc/cpuinfo | grep processor | wc -l)
 
 ifeq ($(PRODUCT),evachargese)
 CROSS_COMPILE := arm-linux-gnueabi-
-BL_BOARD := evachargese
+BL_BOARD := evacharge-se
 BL_SUFFIX := sb
 DTS_NAME := imx28-evachargese
 KERNEL_CFG := evachargese
@@ -54,7 +54,11 @@ ROOTFSSIZE:=$(shell echo $$((1024 * 1024 * 1024)))
 endif
 
 ifeq ($(BL_BOARD),evachargese)
+ifeq ($(HWREV),v1)
 BOOTSTREAM:=imx-bootlets/imx28_ivt_linux.sb
+else
+BOOTSTREAM:=u-boot/u-boot.$(BL_SUFFIX)
+endif
 else
 BOOTSTREAM:=u-boot/u-boot.$(BL_SUFFIX)
 endif
@@ -245,7 +249,7 @@ images-clean clean-images:
 	rm -f images/*.*
 
 rootfs-image: images/rootfs.img
-.PHONY: images/rootfs.img
+#.PHONY: images/rootfs.img
 images/rootfs.img:
 	rm -f images/rootfs.img
 	mkdir -p images
@@ -259,11 +263,20 @@ images/rootfs.img:
 	rm -f images/mountpoint
 
 images/sdcard.img: images/rootfs.img
-ifeq ($(PRODUCT),tarragon)
-	sh tools/gen_emmc_3x_ext4.sh images/sdcard.img $(BOOTSTREAM) images/rootfs.img $$(($(ROOTFSSIZE) / (1024 * 1024)))
+ifeq ($(PRODUCT),duckbill)
+	sh tools/gen_sdcard_ext4.sh images/sdcard.img $(BOOTSTREAM) images/rootfs.img $$(($(ROOTFSSIZE) / (1024 * 1024)))
+	sh tools/fixup_fdt_file.sh tools/fw_env.config $(PRODUCT) $(HWREV)
+endif
+ifeq ($(PRODUCT),evachargese)
+ifeq ($(HWREV),v2)
+	sh tools/gen_emmc_mx28.sh images/sdcard.img $(BOOTSTREAM) images/rootfs.img $$(($(ROOTFSSIZE) / (1024 * 1024)))
 else
 	sh tools/gen_sdcard_ext4.sh images/sdcard.img $(BOOTSTREAM) images/rootfs.img $$(($(ROOTFSSIZE) / (1024 * 1024)))
 	sh tools/fixup_fdt_file.sh tools/fw_env.config $(PRODUCT) $(HWREV)
+endif
+endif
+ifeq ($(PRODUCT),tarragon)
+	sh tools/gen_emmc_3x_ext4.sh images/sdcard.img $(BOOTSTREAM) images/rootfs.img $$(($(ROOTFSSIZE) / (1024 * 1024)))
 endif
 
 .PHONY: disk-image
@@ -271,9 +284,14 @@ disk-image: images/sdcard.img
 	rm -f images/ucl.xml images/emmc.img.*
 ifeq ($(PLATFORM),armel)
 	split -b $(ROOTFSCHUNKSIZE) --numeric-suffixes=1 images/sdcard.img images/emmc.img.
+	python tools/fix-filenames.py images/emmc.img.*
 ifeq ($(PRODUCT),duckbill)
 	gzip -9 images/emmc.img.*
-else
+endif
+ifeq ($(PRODUCT),evachargese)
+ifneq ($(HWREV),v1)
+	gzip -9 images/emmc.img.*
+endif
 	tools/gen_ucl_xml.sh images/ > images/ucl.xml
 endif
 endif
