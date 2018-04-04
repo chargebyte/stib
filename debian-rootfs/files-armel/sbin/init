@@ -6,20 +6,30 @@ export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 mount -t proc - /proc
 mount / -o remount,rw
 
-if [ -x /sbin/adjust-root-partition ]; then
-	adjust-root-partition
-	touch /resizefs
-	rm -f /sbin/adjust-root-partition
-	sync
-	reboot -f
-	while true; do
-		:
-	done
-fi
+# check whether we have older partitioning scheme
+if [ ! -b /dev/mmcblk0p4 ]; then
+	if -x /sbin/adjust-root-partition ]; then
+		adjust-root-partition
+		touch /resizefs
+		rm -f /sbin/adjust-root-partition
+		sync
+		reboot -f
+		while true; do
+			:
+		done
+	fi
 
-if [ -e /resizefs ]; then
-	resize2fs /dev/mmcblk0p2
-	rm -f /resizefs
+	if [ -e /resizefs ]; then
+		resize2fs /dev/mmcblk0p2
+		rm -f /resizefs
+	fi
+else
+	rm -f /sbin/adjust-root-partition
+
+	# format customer and data partition
+	for i in mmcblk0p5 mmcblk0p6 mmcblk0p7; do
+		[ -b /dev/$i ] && mkfs.ext4 -F -F /dev/$i
+	done
 fi
 
 mv /sbin/init.orig /sbin/init
