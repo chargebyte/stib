@@ -6,21 +6,10 @@ export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 mount -t proc - /proc
 mount / -o remount,rw
 
-if [ -x /sbin/adjust-data-partition ]; then
-	adjust-data-partition
-	touch /resizefs
-	rm -f /sbin/adjust-data-partition
-	sync
-	reboot -f
-	while true; do
-		:
-	done
-fi
-
-if [ -e /resizefs ]; then
-	mkfs.ext4 -F -F /dev/mmcblk1p3
-	rm -f /resizefs
-fi
+# format customer and data partition
+for i in mmcblk1p5 mmcblk1p6 mmcblk1p7; do
+	[ -b /dev/$i ] && mkfs.ext4 -F -F /dev/$i
+done
 
 mv /sbin/init.orig /sbin/init
 exec /sbin/init

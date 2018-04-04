@@ -6,4 +6,3 @@
 #
 # <file system> <mount point>   <type>  <options>       <dump>  <pass>
 /dev/root       /               ext4    noatime,errors=remount-ro 0       1
-/dev/mmcblk1p3  /srv            ext4    noatime                   0       2
