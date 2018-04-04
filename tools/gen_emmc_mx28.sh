@@ -1,11 +1,17 @@
 #!/usr/bin/env bash
 #
-# This generates an eMMC image with four partitions for iMX28 based boards.
+# This generates an eMMC image based on a template image file for iMX28 based boards.
+#
+# Partitions are assumed to be as following and must match because of hard-coded
+# offsets below.
+#
 #  1) Boot Stream
-#  2) RootFS 1 - start offset is fixed at 4 MB, size as given per cmdline argument
-#  3) RootFS 2 - same size and content as RootFS 1
-#  4) Data     - fixed 1 GB as placeholder remaining space, should be dynamically
-#                extended at first boot
+#  2) RootFS 1     - start offset is fixed at 4 MB, size 1 GB
+#  3) RootFS 2     - same size and content as RootFS 1
+#  4) Extended Partition
+#    5) Data       - fixed 1 GB
+#    6) Customer 1 - fixed 128 MB
+#    7) Customer 2 - fixed 128 MB
 #
 
 set -x
@@ -18,24 +24,11 @@ OUTPUT="$1"
 BOOTSTREAM="$2"
 ROOTFS="$3"
 ROOTFSSIZE="$4"
+TEMPLATE=tools/emmc-template-armel.image.gz
 
-head=255
-sect=63
-
-[ -x `which ptgen` ] || {
-    echo "ERROR: ptgen not found"
-    exit 1
-}
-
-# we assume that there is still enough room for a 1G data partition
-set `ptgen -o $OUTPUT -h $head -s $sect -a 0 -l 4096 -t 53 -p 2M -t 83 -p ${ROOTFSSIZE}M -p ${ROOTFSSIZE}M -p 1G`
-
-ROOTFS1OFFSET="$(($3 / 512))"
-ROOTFS1SIZE="$(($4 / 512))"
-ROOTFS2OFFSET="$(($5 / 512))"
-ROOTFS2SIZE="$(($6 / 512))"
-DATAOFFSET="$(($7 / 512))"
-DATASIZE="$(($8 / 512))"
+gzip -dc "$TEMPLATE" > "$OUTPUT"
+ROOTFS1OFFSET="8192"
+ROOTFS2OFFSET="2105344"
 
 dd bs=512 if="$ROOTFS" of="$OUTPUT" seek="$ROOTFS1OFFSET" conv=notrunc
 dd bs=512 if="$ROOTFS" of="$OUTPUT" seek="$ROOTFS2OFFSET" conv=notrunc
