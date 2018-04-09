@@ -323,9 +323,16 @@ mfgtool-image: images/mfgtool-$(PRODUCT).zip
 mrproper:
 	-make -C u-boot mrproper
 	-make -C linux mrproper
+	-make -C update-image clean
 
 .PHONY: distclean
 distclean: mrproper clean-rootfs rootfs-clean tools-clean programs-clean
 	rm -rf linux-modules
 	rm -rf linux-firmware
 	rm -rf images
+	rm -f update/bundle-staging/rootfs.*
+
+.PHONY: update-image
+update-image: images/rootfs.img
+	ln -f images/rootfs.img update/bundle-staging/rootfs.ext4
+	$(MAKE) -C update

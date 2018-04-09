@@ -1,0 +1,4 @@
+bundle-staging/rootfs.*
+bundle-staging/customerfs.tar*
+bundle-staging/manifest.raucm
+publish

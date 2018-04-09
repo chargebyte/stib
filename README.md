@@ -165,3 +165,43 @@ and to not depend on the exact size of the eMMC or SD card used (e.g. even two S
 both with 2 GB may differ in exact size). One drawback of this approach is, that the device
 needs to reboot during this first boot because the new partition size is not recognized by
 the linux kernel as the partition is busy.
+
+
+Firmware Field Update with rauc
+-------------------------------
+
+For updating STIB based devices in the field, we recommend using [rauc](http://rauc.io/).
+
+We already prepared the new EVAcharge SE and Tarragon eMMC configuration (partitions)
+to provide the typical A-B setup, that means while system A is booted, the update will
+write to system B and vice versa. Using this approach, your custom application can
+do the firmware update in the background and then switch to the new system with a reboot,
+thus minimizing your applications down time.
+
+Please refer to the [rauc Documentation](https://rauc.readthedocs.io/en/latest/), to get
+familiar with underlaying concepts, terminology and implementation details.
+
+Note, that you need to have rauc command line tool installed on your host system.
+For this I2SE provides precompiled Ubuntu packages in our
+[packagecloud.io](https://packagecloud.io/i2se/debian-bsp-addons) repository.
+To use this packages, you need to run
+
+```
+$ curl -s https://packagecloud.io/install/repositories/i2se/debian-bsp-addons/script.deb.sh | sudo bash
+$ apt-get install rauc
+```
+
+This tool installation is only required for the first time.
+
+The building of the rauc bundle requires the root filesystem image already prepared.
+In other words, your must have completed the steps above until `make disk-image`.
+Then to trigger the building of the rauc bundle, simply run e.g.
+
+```
+$ make PRODUCT=evachargese HWREV=v2 update
+```
+
+Our partioning also allows to include files and directories, which are placed below /opt on
+the target device. We call this customer application filesystem. To install files within this
+filesystem, simply place them below `update/customerfs`. The makefile will then create a tarball
+of this directory and install it during system update process.
