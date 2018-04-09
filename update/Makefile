@@ -40,7 +40,7 @@ bundle-staging/manifest.raucm:
 	echo "$$manifest_content" > $@
 
 bundle-staging/$(customerfs_tarball_fn): $(wildcard customerfs/**/*)
-	tar -caf $@ -C customerfs ./
+	tar -caf $@ --owner=0 --group=0 -C customerfs ./
 
 publish/$(updatefile_filename): $(wildcard bundle-staging/*-install.d/*) bundle-staging/manifest.raucm bundle-staging/$(customerfs_tarball_fn) bundle-staging/rootfs.ext4 bundle-staging/hooks.sh
 	mkdir -p publish
