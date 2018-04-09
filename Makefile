@@ -276,7 +276,7 @@ else
 endif
 endif
 ifeq ($(PRODUCT),tarragon)
-	sh tools/gen_emmc_3x_ext4.sh images/sdcard.img $(BOOTSTREAM) images/rootfs.img $$(($(ROOTFSSIZE) / (1024 * 1024)))
+	sh tools/gen_emmc_mx6ull.sh images/sdcard.img $(BOOTSTREAM) images/rootfs.img $$(($(ROOTFSSIZE) / (1024 * 1024)))
 endif
 
 .PHONY: disk-image
