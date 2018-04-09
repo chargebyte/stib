@@ -334,5 +334,9 @@ distclean: mrproper clean-rootfs rootfs-clean tools-clean programs-clean
 
 .PHONY: update-image
 update-image: images/rootfs.img
-	ln -f images/rootfs.img update/bundle-staging/rootfs.ext4
+	test -f update/bundle-staging/rootfs.ext4 || ln images/rootfs.img update/bundle-staging/rootfs.ext4
 	$(MAKE) -C update
+
+.PHONY: update-clean
+update-clean:
+	$(MAKE) -C update clean
