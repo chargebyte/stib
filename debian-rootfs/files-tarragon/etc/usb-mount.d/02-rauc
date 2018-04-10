@@ -1,0 +1,39 @@
+#!/bin/sh
+
+ACTION="$1"
+MOUNTPOINT="$2"
+
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+INTERNALDIR="/srv/usb-rauc"
+
+if [ "$ACTION" = "add" ]; then
+	mkdir -p "$INTERNALDIR"
+	rm -f $INTERNALDIR/*
+
+	# obtain current platform info
+	eval $(rauc status --output-format=shell 2>/dev/null)
+
+	CANDIDATES="$(find "$MOUNTPOINT" -name *.image)"
+	if [ -n "$CANDIDATES" ]; then
+		for x in $CANDIDATES; do
+			BASENAME="$(basename $x .image)"
+			BUNDLE="$INTERNALDIR/${BASENAME}.raucb"
+
+			# need to copy over since we must change filename extension
+			cp "$x" "$BUNDLE"
+
+			# obtain image info
+			eval $(rauc info --output-format=shell "$BUNDLE" 2>/dev/null)
+
+			# if it does not match our current platform, remove the file now
+			# to free space for following candidates
+			if [ "$RAUC_SYSTEM_COMPATIBLE" != "$RAUC_MF_COMPATIBLE" ]; then
+				rm -f "$BUNDLE"
+				continue
+			fi
+
+			# try to install it and reboot on success
+			rauc install "$BUNDLE" && reboot
+		done
+	fi
+fi

@@ -3,7 +3,7 @@
 	url = https://github.com/mhei/fsl-imx-uuc.git
 [submodule "u-boot"]
 	path = u-boot
-	url = https://github.com/mhei/u-boot.git
+	url = https://github.com/I2SE/u-boot.git
 [submodule "linux"]
 	path = linux
 	url = https://github.com/I2SE/linux.git

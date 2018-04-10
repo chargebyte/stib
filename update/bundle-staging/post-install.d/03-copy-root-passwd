@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+# This script copies current root password to new system.
+#
+
+SLOT_CLASS="$1"
+SLOT_MOUNT_POINT="$2"
+BUNDLE_MOUNT_POINT="$3"
+
+if [ "$SLOT_CLASS" = "rootfs" ]; then
+	(
+		grep '^root:' /etc/shadow
+		grep -v '^root:' "$SLOT_MOUNT_POINT/etc/shadow"
+	) > "$SLOT_MOUNT_POINT/etc/shadow.new"
+
+	mv "$SLOT_MOUNT_POINT/etc/shadow.new" "$SLOT_MOUNT_POINT/etc/shadow"
+fi

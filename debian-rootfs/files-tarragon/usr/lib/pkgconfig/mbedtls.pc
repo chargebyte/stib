@@ -1,0 +1,10 @@
+prefix=/usr
+exec_prefix=${prefix}
+includedir=${prefix}/include
+libdir=${exec_prefix}/lib
+
+Name: mbedtls
+Description: mbed TLS library
+Version: 2.4.2
+Cflags: -I${includedir}
+Libs: -L${libdir} -lmbedtls -lmbedx509 -lmbedcrypto

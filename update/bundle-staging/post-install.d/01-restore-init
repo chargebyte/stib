@@ -1,0 +1,15 @@
+#!/bin/sh
+#
+# This script restores the original init link which is replaced with a
+# helper script in the image (initial filesystem creation etc.).
+#
+
+SLOT_CLASS="$1"
+SLOT_MOUNT_POINT="$2"
+BUNDLE_MOUNT_POINT="$3"
+
+if [ "$SLOT_CLASS" = "rootfs" ]; then
+	if [ -f "$SLOT_MOUNT_POINT/sbin/init.orig" ]; then
+		mv "$SLOT_MOUNT_POINT/sbin/init.orig" "$SLOT_MOUNT_POINT/sbin/init"
+	fi
+fi
