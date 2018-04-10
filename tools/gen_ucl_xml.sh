@@ -43,6 +43,10 @@ EOL
 
 PREFIX="emmc.img"
 FILESIZE=`stat --printf="%s" $IMAGEDIR/$PREFIX.01$SUFFIX`
+if [ "$SUFFIX" = ".gz" ]; then
+	# we need uncompressed file size
+	FILESIZE="67108864"
+fi
 
 for FILENAME in `ls -1 $IMAGEDIR/$PREFIX*$SUFFIX | sort -r`; do
 	BASENAME="${FILENAME##*/}"
