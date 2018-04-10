@@ -12,6 +12,7 @@ KERNEL_CFG := evachargese
 PRODUCT_COMMON :=
 PROGRAMS := open-plc-utils
 PLATFORM := armel
+UBOOTENVTARGET := envtools
 
 else ifeq ($(PRODUCT),tarragon)
 CROSS_COMPILE := arm-linux-gnueabihf-
@@ -25,6 +26,7 @@ PROGRAMS := open-plc-utils
 PLATFORM := armhf
 MFGTOOL_PATH := mfgtool-$(PRODUCT)
 MFGTOOL_CFG := tarragon-mfgtool
+UBOOTENVTARGET := env
 
 else
 CROSS_COMPILE := arm-linux-gnueabi-
@@ -35,6 +37,7 @@ KERNEL_CFG := duckbill
 PRODUCT_COMMON := duckbill
 PROGRAMS :=
 PLATFORM := armel
+UBOOTENVTARGET := env
 
 endif
 
@@ -120,9 +123,9 @@ u-boot uboot: u-boot/u-boot.$(BL_SUFFIX)
 
 u-boot/u-boot.$(BL_SUFFIX):
 	$(MAKE) -C u-boot $(BL_BOARD)_defconfig CROSS_COMPILE="$(CROSS_COMPILE)"
-	$(MAKE) -C u-boot -j $(JOBS) env
-	ln -sf fw_printenv u-boot/tools/env/fw_setenv
 	$(MAKE) -C u-boot -j $(JOBS) u-boot.$(BL_SUFFIX) CROSS_COMPILE="$(CROSS_COMPILE)"
+	$(MAKE) -C u-boot -j $(JOBS) $(UBOOTENVTARGET)
+	ln -sf fw_printenv u-boot/tools/env/fw_setenv
 
 linux: linux/arch/arm/boot/zImage
 
