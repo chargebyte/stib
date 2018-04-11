@@ -11,13 +11,18 @@ fi
 IMAGEDIR="$1"
 DTB="$2"
 PREFIX="emmc.img"
+EXTBASE=10
 
 if [ ! -f "$IMAGEDIR/$PREFIX.01" ]; then
 	echo "ERROR: No image file found"
 	exit 1
 fi
 
-
+FILESIZE=`stat --printf="%s" "$IMAGEDIR"/$PREFIX.01`
+BLOCKSIZE=$((4 * 1024 * 1024))
+TOTALCOUNT=`ls -1 "$IMAGEDIR"/$PREFIX* | sort -r | head -n 1`
+TOTALCOUNT="${TOTALCOUNT##*.}"
+[ "$EXTBASE" = 16 ] && TOTALCOUNT=$(printf '%d' "0x$TOTALCOUNT")
 
 cat <<EOL
 <UCL>
@@ -48,24 +53,27 @@ cat <<EOL
     -->
 
     <CMD state="Updater" type="push" body="mknod block,mmcblk1,/dev/mmcblk1,block">Creating Block Device for eMMC</CMD>
-
 EOL
 
-FILESIZE=`stat --printf="%s" "$IMAGEDIR/$PREFIX.01"`
-BLOCKSIZE=$((4 * 1024 * 1024))
-TOTALCOUNT=`ls -1 "$IMAGEDIR"/$PREFIX* | sort -r | head -n 1`
-TOTALCOUNT="${TOTALCOUNT##*.}"
-
 for FILENAME in `cd "$IMAGEDIR"; ls -1 $PREFIX* | sort -r`; do
-	BASENAME=`basename "${FILENAME}"`
+	BASENAME="${FILENAME##*/}"
+	WOSUFFIX="$BASENAME"
+	# strip off suffix if given
+	[ -n "$SUFFIX" ] && WOSUFFIX="${BASENAME%%$SUFFIX}"
 	# assume the first image starts with 01
-	EXTENSION="${BASENAME##*.}"
+	EXTENSION="${WOSUFFIX##*.}"
 	# we need to take care of the leading zero
 	SEEK=$((10#$EXTENSION * $FILESIZE / $BLOCKSIZE - $FILESIZE / $BLOCKSIZE))
 
+	if [ "$EXTBASE" = 16 ]; then
+		PROGRESS=$(printf '%d' "0x$EXTENSION")
+	else
+		PROGRESS="$EXTENSION"
+	fi
+
 	cat <<-EOL
-	    <CMD state="Updater" type="push" body="pipe dd of=/dev/mmcblk1 seek=$SEEK bs=$BLOCKSIZE" file="files/$BASENAME">Sending $EXTENSION/$TOTALCOUNT</CMD>
-	    <CMD state="Updater" type="push" body="frf">Writing $EXTENSION/$TOTALCOUNT</CMD>
+	    <CMD state="Updater" type="push" body="pipe ${UNCOMPRESS}dd of=/dev/mmcblk1 seek=$SEEK bs=$BLOCKSIZE" file="files/$BASENAME">Sending $PROGRESS/$TOTALCOUNT</CMD>
+	    <CMD state="Updater" type="push" body="frf">Writing $PROGRESS/$TOTALCOUNT</CMD>
 	EOL
 done
 

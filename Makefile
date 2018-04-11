@@ -292,10 +292,10 @@ ifeq ($(PRODUCT),duckbill)
 	gzip -9 images/emmc.img.*
 endif
 ifeq ($(PRODUCT),evachargese)
-ifneq ($(HWREV),v1)
-	gzip -9 images/emmc.img.*
-endif
 	tools/gen_ucl_xml.sh images/ > images/ucl.xml
+ifeq ($(HWREV),v2)
+	gzip -9k images/emmc.img.*
+endif
 endif
 endif
 
