@@ -10,7 +10,7 @@ fi
 
 IMAGEDIR="$1"
 PREFIX="emmc.img"
-EXTBASE=16
+EXTBASE=10
 
 if [ ! -f "$IMAGEDIR/$PREFIX.01" ]; then
 	echo "ERROR: No image file found"
