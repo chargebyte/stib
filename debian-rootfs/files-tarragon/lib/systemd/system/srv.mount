@@ -2,5 +2,5 @@
 Description=Data Partition File System
 
 [Mount]
-What=/dev/mmcblk0p5
+What=/dev/mmcblk1p5
 Where=/srv
