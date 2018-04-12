@@ -12,6 +12,7 @@ KERNEL_CFG := evachargese
 PRODUCT_COMMON :=
 PROGRAMS := open-plc-utils
 PLATFORM := armel
+MFGTOOL_PATH := mfgtool-$(PRODUCT)
 UBOOTENVTARGET := envtools
 
 else ifeq ($(PRODUCT),tarragon)
@@ -288,22 +289,15 @@ disk-image: images/sdcard.img
 ifeq ($(PLATFORM),armel)
 	split -b $(ROOTFSCHUNKSIZE) --numeric-suffixes=1 images/sdcard.img images/emmc.img.
 	python tools/fix-filenames.py images/emmc.img.*
-ifeq ($(PRODUCT),duckbill)
 	gzip -9 images/emmc.img.*
-endif
-ifeq ($(PRODUCT),evachargese)
-	tools/gen_ucl_xml.sh images/ > images/ucl.xml
-ifeq ($(HWREV),v2)
-	gzip -9k images/emmc.img.*
-endif
-endif
 endif
 
 .PHONY: mfgtool-profile
 mfgtool-profile: images/sdcard.img
 	rm -rf "images/$(MFGTOOL_PATH)"
-	cp -a mfgtool "images/$(MFGTOOL_PATH)"
+	cp -a "mfgtool/$(PRODUCT)" "images/$(MFGTOOL_PATH)"
 	mkdir -p "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/files/"
+ifeq ($(PRODUCT),tarragon)
 	cp -av linux/arch/arm/boot/zImage "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/firmware"
 	cp -av linux/arch/arm/boot/dts/$(DTS_NAME)-*.dtb "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/firmware"
 ifneq ($(MFGTOOL_CFG),)
@@ -311,10 +305,17 @@ ifneq ($(MFGTOOL_CFG),)
 	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" olddefconfig
 	$(MAKE) -C linux -j $(JOBS) ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)"
 endif
+endif
 	split -b $(ROOTFSCHUNKSIZE) --numeric-suffixes=1 images/sdcard.img "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/files/emmc.img."
+ifeq ($(PRODUCT),tarragon)
 	cp "$(BOOTSTREAM)" "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/firmware"
 	cp -av linux/arch/arm/boot/zImage "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/firmware/zImage_mfgtool"
+endif
+ifeq ($(PLATFORM),armhf)
 	tools/gen_ucl2_xml.sh "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/files" $(DTS_NAME)-sd-mfg.dtb > "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/ucl2.xml"
+else
+	tools/gen_ucl_xml.sh "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/files" > "images/$(MFGTOOL_PATH)/Profiles/$(PRODUCT)/OS Firmware/ucl.xml"
+endif
 
 images/mfgtool-$(PRODUCT).zip: mfgtool-profile
 	cd images && zip -r "$(shell basename "$@")" "$(MFGTOOL_PATH)"
