@@ -1,7 +1,5 @@
 #!/bin/sh
 
-env | logger
-
 case "$1" in
 	install-check)
 		if [ "$RAUC_MF_COMPATIBLE" != "$RAUC_SYSTEM_COMPATIBLE" ]; then
