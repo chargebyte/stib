@@ -4,6 +4,7 @@ Description=Rauc Update Service
 [Service]
 Type=dbus
 BusName=de.pengutronix.rauc
+Environment=TMPDIR=/srv
 ExecStart=/usr/bin/rauc --mount=/run/rauc service
 RuntimeDirectory=rauc
 MountFlags=slave
