@@ -59,7 +59,7 @@ do_mount()
 	fi
 
 	if ! /bin/mount -o ${OPTS} ${DEVICE} ${MOUNT_POINT}; then
-		echo "Error mounting ${DEVICE} (status = $?)"
+		echo "Error: mounting ${DEVICE} failed (status = $?)"
 		/bin/rmdir ${MOUNT_POINT}
 		exit 1
 	fi
@@ -73,7 +73,7 @@ do_unmount()
 		echo "Warning: ${DEVICE} is not mounted"
 	else
 		/bin/umount -l ${DEVICE}
-		echo "**** Unmounted ${DEVICE}"
+		echo "**** Unmounted ${DEVICE} ****"
 	fi
 
 	# Delete all empty dirs in /media that aren't being used as mount
@@ -83,7 +83,7 @@ do_unmount()
 	for f in /media/* ; do
 		if [[ -n $(/usr/bin/find "$f" -maxdepth 0 -type d -empty) ]]; then
 			if ! /bin/grep -q " $f " /etc/mtab; then
-				echo "**** Removing mount point $f"
+				echo "**** Removing mount point $f ****"
 				/bin/rmdir "$f"
 			fi
 		fi
