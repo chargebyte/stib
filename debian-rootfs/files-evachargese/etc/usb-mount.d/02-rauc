@@ -15,6 +15,11 @@ if [ "$ACTION" = "add" ]; then
 
 	CANDIDATES="$(find "$MOUNTPOINT" -name *.image)"
 	if [ -n "$CANDIDATES" ]; then
+		# if we are running a system which was updated with rauc, we
+		# can obtain sha256 sums from slot status files
+		ROOTFS_DIGEST=$(awk -F "=" ' /^sha256/ {print $2}' /slot.raucs 2>/dev/null)
+		CUSTOMERFS_DIGEST=$(awk -F "=" ' /^sha256/ {print $2}' /opt/slot.raucs 2>/dev/null)
+
 		for x in $CANDIDATES; do
 			BASENAME="$(basename $x .image)"
 			BUNDLE="$INTERNALDIR/${BASENAME}.raucb"
@@ -29,6 +34,18 @@ if [ "$ACTION" = "add" ]; then
 			# to free space for following candidates
 			if [ "$RAUC_SYSTEM_COMPATIBLE" != "$RAUC_MF_COMPATIBLE" ]; then
 				rm -f "$BUNDLE"
+				continue
+			fi
+
+			# loop through images in the bundle and determine whether it looks like this
+			# is the bundle we are already running from
+			for y in $(seq 0 $((RAUC_MF_IMAGES - 1))); do
+				eval RAUC_IMAGE_CLASS=\$RAUC_IMAGE_CLASS_${y}
+				eval RAUC_${RAUC_IMAGE_CLASS}_DIGEST=\$RAUC_IMAGE_DIGEST_${y}
+			done
+
+			if [ "$ROOTFS_DIGEST" = "$RAUC_rootfs_DIGEST" -a "$CUSTOMERFS_DIGEST" = "$RAUC_customerfs_DIGEST" ]; then
+				# seems that this update was already processed in previous run, so skip it
 				continue
 			fi
 
