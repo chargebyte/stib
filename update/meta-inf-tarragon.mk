@@ -1,5 +1,5 @@
 COMPATIBLE:=I2SE Tarragon
-VERSION:=2018-01-01
+VERSION:=$(shell date +'%Y-%m-%d-%H%M')
 
 UPDATEFILE_PREFIX:=Firmware_Tarragon_
 UPDATEFILE_SUFFIX:=.image
