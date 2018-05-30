@@ -24,6 +24,8 @@ if [ "$ACTION" = "add" ]; then
 			BASENAME="$(basename $x .image)"
 			BUNDLE="$INTERNALDIR/${BASENAME}.raucb"
 
+			echo "considering $x" | logger -t usb-mount-rauc
+
 			# need to copy over since we must change filename extension
 			cp "$x" "$BUNDLE"
 
@@ -34,6 +36,7 @@ if [ "$ACTION" = "add" ]; then
 			# to free space for following candidates
 			if [ "$RAUC_SYSTEM_COMPATIBLE" != "$RAUC_MF_COMPATIBLE" ]; then
 				rm -f "$BUNDLE"
+				echo "not compatible: '$RAUC_SYSTEM_COMPATIBLE' vs. '$RAUC_MF_COMPATIBLE'" | logger -t usb-mount-rauc
 				continue
 			fi
 
@@ -46,10 +49,12 @@ if [ "$ACTION" = "add" ]; then
 
 			if [ "$ROOTFS_DIGEST" = "$RAUC_rootfs_DIGEST" -a "$CUSTOMERFS_DIGEST" = "$RAUC_customerfs_DIGEST" ]; then
 				# seems that this update was already processed in previous run, so skip it
+				echo "already installed" | logger -t usb-mount-rauc
 				continue
 			fi
 
 			# try to install it and reboot on success
+			echo "trying to install" | logger -t usb-mount-rauc
 			rauc install "$BUNDLE" && reboot
 		done
 	fi
