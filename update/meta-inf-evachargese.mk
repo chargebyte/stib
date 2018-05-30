@@ -1,5 +1,5 @@
 COMPATIBLE:=I2SE EVAcharge SE
-VERSION:=2018-01-01
+VERSION:=$(shell date +'%Y-%m-%d-%H%M')
 
 UPDATEFILE_PREFIX:=Firmware_EVAchargeSE_
 UPDATEFILE_SUFFIX:=.image
