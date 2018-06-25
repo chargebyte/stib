@@ -6,19 +6,3 @@ source /etc/network/interfaces.d/*
 # The loopback network interface
 auto lo
 iface lo inet loopback
-
-# The primary network interface
-auto eth0
-iface eth0 inet dhcp
-iface eth0 inet6 auto
-
-# Static emergency fallback IP address
-auto eth0:1
-iface eth0:1 inet static
-    address 169.254.12.53
-    netmask 255.255.0.0
-
-# The powerline network interface
-auto eth1
-iface eth1 inet manual
-iface eth1 inet6 auto
