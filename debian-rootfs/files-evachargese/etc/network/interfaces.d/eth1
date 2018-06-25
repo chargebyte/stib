@@ -1,0 +1,4 @@
+# The Control Pilot powerline network interface
+auto eth1
+iface eth1 inet manual
+iface eth1 inet6 manual

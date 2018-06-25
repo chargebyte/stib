@@ -3,15 +3,6 @@
 
 source /etc/network/interfaces.d/*
 
-auto lo eth0 qca0
+# The loopback network interface
+auto lo
 iface lo inet loopback
-
-auto eth0
-iface eth0 inet dhcp
-
-iface qca0 inet static
-    address 192.168.66.2
-    netmask 255.255.255.0
-    pre-up ip link set eth1 name qca0 || true
-#    post-up /root/flash_qca7000_temporarily.sh
-
