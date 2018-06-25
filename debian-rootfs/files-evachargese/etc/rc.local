@@ -24,7 +24,8 @@ fi
 /root/evse-gpio.sh export
 
 # Set bitrate for CAN interface to 1 MBit
-/sbin/ip link set can0 up type can bitrate 1000000
+# Note: this is now done with /etc/network/interface.d/can0
+#/sbin/ip link set can0 up type can bitrate 1000000
 
 # Switch UART to 115200 baud
 stty -F /dev/ttyAPP0 115200
