@@ -178,9 +178,8 @@ programs: $(PROGRAMS)
 
 .PHONY: programs-clean
 programs-clean:
-	-rm -rf $(OPENPLCUTILS_INSTALLDIR)
+	-sudo rm -rf $(OPENPLCUTILS_INSTALLDIR)
 	$(MAKE) -C programs/open-plc-utils clean
-
 
 .PHONY: clean
 clean: tools-clean
