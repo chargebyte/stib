@@ -33,10 +33,10 @@ else
 	echo -ne "\e[39m"
 fi
 
-echo -n "Testing for /dev/ttymxc2 (RS485) ... "
+echo -n "Testing for /dev/ttymxc4 (RS485) ... "
 
 DEVICE="no"
-stty -F /dev/ttymxc2 > /dev/null 2>&1 && DEVICE="yes"
+stty -F /dev/ttymxc4 > /dev/null 2>&1 && DEVICE="yes"
 
 if [ "$DEVICE" = "yes" ]; then
 	echo -e "\e[32mOK"
@@ -46,10 +46,23 @@ else
 	echo -ne "\e[39m"
 fi
 
-echo -n "Testing for /dev/ttymxc3 ... "
+echo -n "Testing for /dev/ttymxc5 (STM32) ... "
 	
 DEVICE="no"
-stty -F /dev/ttymxc3 > /dev/null 2>&1 && DEVICE="yes"
+stty -F /dev/ttymxc5 > /dev/null 2>&1 && DEVICE="yes"
+
+if [ "$DEVICE" = "yes" ]; then
+	echo -e "\e[32mOK"
+	echo -ne "\e[39m"
+else
+	echo -e "\e[31mFAILED"
+	echo -ne "\e[39m"
+fi
+
+echo -n "Testing for /dev/ttymxc6 (ext UART) ... "
+
+DEVICE="no"
+stty -F /dev/ttymxc6 > /dev/null 2>&1 && DEVICE="yes"
 
 if [ "$DEVICE" = "yes" ]; then
 	echo -e "\e[32mOK"
@@ -60,9 +73,9 @@ else
 fi
 
 
-echo -n "Testing for ADC ... "
+echo -n "Testing for ADC channel 4 ... "
 
-if [ ! -e /sys/bus/iio/devices/iio:device0/in_voltage0_raw ]; then
+if [ ! -e /sys/bus/iio/devices/iio:device0/in_voltage4_raw ]; then
 	echo -e "\e[31mFAILED"
 	echo -ne "\e[39m"
 else
@@ -108,9 +121,29 @@ else
 	echo -ne "\e[39m"
 fi
 
-echo -n "Testing for pwmchip7 ... "
+echo -n "Testing for pwmchip1 (DIG IN ref) ... "
+
+if [ ! -e /sys/class/pwm/pwmchip1/pwm0/enable ]; then
+	echo -e "\e[31mFAILED"
+	echo -ne "\e[39m"
+else
+	echo -e "\e[32mOK"
+	echo -ne "\e[39m"
+fi
+
+echo -n "Testing for pwmchip7 (CP) ... "
 
 if [ ! -e /sys/class/pwm/pwmchip7/pwm0/enable ]; then
+	echo -e "\e[31mFAILED"
+	echo -ne "\e[39m"
+else
+	echo -e "\e[32mOK"
+	echo -ne "\e[39m"
+fi
+
+echo -n "Testing for i2c-dev ... "
+
+if [ ! -e /dev/i2c-3 ]; then
 	echo -e "\e[31mFAILED"
 	echo -ne "\e[39m"
 else
@@ -134,16 +167,6 @@ else
 	echo -ne "\e[39m"
 fi
 
-echo -n "Testing for userspace GPIOs ... "
-
-if [ ! -e /sys/class/gpio/gpio13 ]; then
-	echo -e "\e[31mFAILED"
-	echo -ne "\e[39m"
-else
-	echo -e "\e[32mOK"
-	echo -ne "\e[39m"
-fi
-
 echo -n "Testing for userspace GPIOs (qca7000) ... "
 
 if [ ! -e /sys/class/gpio/gpio81 ]; then
@@ -159,6 +182,20 @@ echo -n "Testing for running eth1 ... "
 QCA="down"
 /sbin/ifconfig eth1 2>/dev/null | grep -q UP && QCA="up"
 test "$QCA" = "up" && /usr/local/bin/plctool -r -i eth1 | grep -q -e 'MAC-QCA7000' || QCA="down"
+
+if [ "$QCA" = "down" ]; then
+	echo -e "\e[31mFAILED"
+	echo -ne "\e[39m"
+else
+	echo -e "\e[32mOK"
+	echo -ne "\e[39m"
+fi
+
+echo -n "Testing for running eth2 ... "
+
+QCA="down"
+/sbin/ifconfig eth2 2>/dev/null | grep -q UP && QCA="up"
+test "$QCA" = "up" && /usr/local/bin/plctool -r -i eth2 | grep -q -e 'MAC-QCA7000' || QCA="down"
 
 if [ "$QCA" = "down" ]; then
 	echo -e "\e[31mFAILED"
@@ -194,7 +231,40 @@ else
 	echo -ne "\e[39m"
 fi
 
-echo -n "Testing for sshd.pid ... "
+echo -n "Testing for running can1 ... "
+
+CAN="down"
+/sbin/ifconfig can1 2>/dev/null | grep -q UP && CAN="up"
+
+if [ "$CAN" = "down" ]; then
+	echo -e "\e[31mFAILED"
+	echo -ne "\e[39m"
+else
+	echo -e "\e[32mOK"
+	echo -ne "\e[39m"
+fi
+
+echo -n "Testing for PWM fan ... "
+
+if [ ! -e /sys/class/hwmon/hwmon0/fan1_input ]; then
+	echo -e "\e[31mFAILED"
+	echo -ne "\e[39m"
+else
+	echo -e "\e[32mOK"
+	echo -ne "\e[39m"
+fi
+
+echo -n "Testing for CPU thermal ... "
+
+if [ ! -e /sys/class/hwmon/hwmon1/temp1_input ]; then
+	echo -e "\e[31mFAILED"
+	echo -ne "\e[39m"
+else
+	echo -e "\e[32mOK"
+	echo -ne "\e[39m"
+fi
+
+echo -n "Testing for running OpenSSH ... "
 
 if [ -f /var/run/sshd.pid -o -f /var/run/dropbear.pid ]; then
 	echo -e "\e[32mOK"
