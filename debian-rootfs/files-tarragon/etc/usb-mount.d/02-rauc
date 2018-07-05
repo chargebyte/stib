@@ -26,19 +26,17 @@ if [ "$ACTION" = "add" ]; then
 
 			echo "considering $x" | logger -t usb-mount-rauc
 
-			# need to copy over since we must change filename extension
-			cp "$x" "$BUNDLE"
-
 			# obtain image info
-			eval $(rauc info --output-format=shell "$BUNDLE" 2>/dev/null)
+			eval $(rauc info --no-verify --output-format=shell "$BUNDLE" 2>/dev/null)
 
-			# if it does not match our current platform, remove the file now
-			# to free space for following candidates
+			# if it does not match our current platform, we ignore it
 			if [ "$RAUC_SYSTEM_COMPATIBLE" != "$RAUC_MF_COMPATIBLE" ]; then
 				echo "not compatible: '$RAUC_SYSTEM_COMPATIBLE' vs. '$RAUC_MF_COMPATIBLE'" | logger -t usb-mount-rauc
-				rm -f "$BUNDLE"
 				continue
 			fi
+
+			# need to copy over since we must change filename extension
+			cp "$x" "$BUNDLE"
 
 			# loop through images in the bundle and determine whether it looks like this
 			# is the bundle we are already running from
