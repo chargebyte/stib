@@ -9,8 +9,8 @@ if [ $# -lt 2 ]; then
 	cat >&2 <<EOU
 Usage: $0 MAC1 MAC2 [MAC3]
   MAC1   Ethernet MAC address
-  MAC2   QCA7500 MAC address
-  MAC3   QCA7000 MAC address (must have an I2SE OUI)
+  MAC2   QCA7000 CP MAC address (must have an I2SE OUI)
+  MAC3   QCA7000 MAINS MAC address (must have an I2SE OUI)
 EOU
 	exit 1
 fi
@@ -34,14 +34,15 @@ if [[ ! "$mac1" =~ ^([0-9a-f]{2}[:]){5}([0-9a-f]{2})$ ]]; then
 	exit 1
 fi
 
-if [[ ! "$mac2" =~ ^([0-9a-f]{2}[:]){5}([0-9a-f]{2})$ ]]; then
+# Currently this script and the kernel only support I2SE OUI for QCA7000
+if [[ ! "$mac2" =~ ^00[:]01[:]87([:]([0-9a-f]){2}){3}$ ]]; then
 	echo "Invalid MAC2"
 	exit 1
 fi
 
 reg0="0x${mac1:6:2}${mac1:9:2}${mac1:12:2}${mac1:15:2}"
-reg1="0x${mac2:12:2}${mac2:15:2}${mac1:0:2}${mac1:3:2}"
-reg2="0x${mac2:0:2}${mac2:3:2}${mac2:6:2}${mac2:9:2}"
+reg1="0x0000${mac1:0:2}${mac1:3:2}"
+reg2="0x${mac2:6:2}${mac2:9:2}${mac2:12:2}${mac2:15:2}"
 reg3=""
 
 if [ $# -gt 2 ]; then
@@ -56,7 +57,7 @@ if [ $# -gt 2 ]; then
 	if [ "$verify" == "0x0" ]; then
 		reg3="0x${mac3:6:2}${mac3:9:2}${mac3:12:2}${mac3:15:2}"
 	else
-		echo "QCA7000 MAC address already burned"
+		echo "QCA7000 MAC MAINS address already burned"
 	fi
 fi
 
@@ -81,11 +82,12 @@ sleep 1
 echo "HW_OCOTP_MAC1: $reg1"
 echo $reg1 > /sys/fsl_otp/HW_OCOTP_MAC1
 sleep 1
-echo "HW_OCOTP_MAC2: $reg2"
-echo $reg2 > /sys/fsl_otp/HW_OCOTP_MAC2
+echo "HW_OCOTP_MAC2: unused"
+echo "HW_OCOTP_GP2: $reg2"
+echo $reg2 > /sys/fsl_otp/HW_OCOTP_GP2
 
 if [ "$reg3" != "" ]; then
 	sleep 1
-	echo "HW_OCOTP_GP30: $reg3"
-	echo $reg3 > /sys/fsl_otp/HW_OCOTP_GP30
+	echo "HW_OCOTP_GP1: $reg3"
+	echo $reg3 > /sys/fsl_otp/HW_OCOTP_GP1
 fi

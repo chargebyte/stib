@@ -1,0 +1,4 @@
+# The CAN interface
+auto can1
+iface can1 can static
+    bitrate 1000000

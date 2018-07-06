@@ -20,16 +20,13 @@ if [ ! -e "$STAMP" ]; then
         run_rc_once && : > "$STAMP"
 fi
 
-# Export GPIOs
-/root/evse-gpio.sh export
-
 # Set bitrate for CAN interface to 1 MBit
 # Note: this is now done with /etc/network/interfaces.d/can0
 #/sbin/ip link set can0 up type can bitrate 1000000
 
 # Switch both RS485 to 115200 baud
 stty -F /dev/ttymxc0 115200
-stty -F /dev/ttymxc2 115200
+test -f /dev/ttymxc4 && stty -F /dev/ttymxc4 115200
 
 # Switch power LED to on
 echo none > /sys/class/leds/evse:green:led1/trigger
