@@ -10,7 +10,6 @@ BL_SUFFIX := sb
 DTS_NAME := imx28-evachargese
 KERNEL_CFG := evachargese
 PRODUCT_COMMON :=
-PROGRAMS := open-plc-utils
 PLATFORM := armel
 MFGTOOL_PATH := mfgtool-$(PRODUCT)
 UBOOTENVTARGET := envtools
@@ -23,7 +22,6 @@ DTS_NAME := imx6ull-tarragon
 KERNEL_CFG := tarragon
 PRODUCT_COMMON :=
 HWREV := v1
-PROGRAMS := open-plc-utils
 PLATFORM := armhf
 MFGTOOL_PATH := mfgtool-$(PRODUCT)
 MFGTOOL_CFG := tarragon-mfgtool
@@ -36,7 +34,6 @@ BL_SUFFIX := sb
 DTS_NAME := imx28-duckbill
 KERNEL_CFG := duckbill
 PRODUCT_COMMON := duckbill
-PROGRAMS :=
 PLATFORM := armel
 UBOOTENVTARGET := env
 
@@ -164,23 +161,6 @@ imx-bootlets/imx28_ivt_linux.sb: linux/arch/arm/boot/zImage
 	cat linux/arch/arm/boot/zImage linux/arch/arm/boot/dts/imx28-$(PRODUCT).dtb > imx-bootlets/zImage
 	$(MAKE) -C imx-bootlets -j1 CROSS_COMPILE="$(CROSS_COMPILE)" MEM_TYPE=MEM_DDR1 BOARD=$(BL_BOARD)
 
-
-OPENPLCUTILS_INSTALLDIR:=${CURDIR}/programs/open-plc-utils/rootfs
-$(OPENPLCUTILS_INSTALLDIR):
-	$(MAKE) -C programs/open-plc-utils CROSS="$(CROSS_COMPILE)"
-	sudo $(MAKE) -C programs/open-plc-utils ROOTFS="$(OPENPLCUTILS_INSTALLDIR)" install
-
-.PHONY: open-plc-utils
-open-plc-utils: $(OPENPLCUTILS_INSTALLDIR)
-
-.PHONY: programs
-programs: $(PROGRAMS)
-
-.PHONY: programs-clean
-programs-clean:
-	-sudo rm -rf $(OPENPLCUTILS_INSTALLDIR)
-	$(MAKE) -C programs/open-plc-utils clean
-
 .PHONY: clean
 clean: tools-clean
 	$(MAKE) -C u-boot clean
@@ -194,7 +174,7 @@ rootfs-clean:
 rootfs:
 	$(MAKE) -C debian-rootfs
 
-install: clean-rootfs programs
+install: clean-rootfs
 	sudo mkdir -p rootfs
 	sudo cp -a debian-rootfs/rootfs/* rootfs/
 
@@ -222,9 +202,6 @@ endif
 	sudo sh -c 'if [ -d debian-rootfs/files-$(PRODUCT) ]; then cp -a debian-rootfs/files-$(PRODUCT)/* rootfs-tmp/; fi'
 	# and fold in customer specific files (if present)
 	sudo sh -c 'if [ -d debian-rootfs/files-$(PRODUCT)-custom ]; then cp -a debian-rootfs/files-$(PRODUCT)-custom/* rootfs-tmp/ || true; fi'
-ifeq ($(findstring open-plc-utils,$(PROGRAMS)),open-plc-utils)
-	sudo sh -c 'cp -a $(OPENPLCUTILS_INSTALLDIR)/* rootfs-tmp/'
-endif
 	sudo mkdir -p rootfs-tmp/usr/bin/
 	sudo cp -a /usr/bin/qemu-arm-static rootfs-tmp/usr/bin/
 	sudo chown 0:0 -R rootfs-tmp
@@ -329,7 +306,7 @@ mrproper:
 	-make -C update-image clean
 
 .PHONY: distclean
-distclean: mrproper clean-rootfs rootfs-clean tools-clean programs-clean
+distclean: mrproper clean-rootfs rootfs-clean tools-clean
 	rm -rf linux-modules
 	rm -rf linux-firmware
 	rm -rf images

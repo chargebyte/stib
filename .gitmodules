@@ -15,7 +15,3 @@
 	path = tools/elftosb
 	url = https://github.com/eewiki/elftosb.git
 	ignore = dirty
-[submodule "programs/open-plc-utils"]
-	path = programs/open-plc-utils
-	url = https://github.com/qca/open-plc-utils.git
-	ignore = dirty
