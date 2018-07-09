@@ -27,7 +27,7 @@ if [ "$ACTION" = "add" ]; then
 			echo "considering $x" | logger -t usb-mount-rauc
 
 			# obtain image info
-			eval $(rauc info --no-verify --output-format=shell "$BUNDLE" 2>/dev/null)
+			eval $(rauc info --no-verify --output-format=shell "$x" 2>/dev/null)
 
 			# if it does not match our current platform, we ignore it
 			if [ "$RAUC_SYSTEM_COMPATIBLE" != "$RAUC_MF_COMPATIBLE" ]; then
