@@ -2,7 +2,7 @@
 
 echo -n "Testing for open-plc-utils ... "
 
-if [ -x /usr/local/bin/plctool ]; then
+if [ -x /usr/bin/plctool ]; then
 	echo -e "\e[32mOK"
 	echo -ne "\e[39m"
 else
@@ -123,7 +123,7 @@ fi
 
 echo -n "Testing for pwmchip1 (DIG IN ref) ... "
 
-if [ ! -e /sys/class/pwm/pwmchip1/pwm0/enable ]; then
+if [ ! -e /sys/class/pwm/pwmchip1/ ]; then
 	echo -e "\e[31mFAILED"
 	echo -ne "\e[39m"
 else
@@ -133,7 +133,7 @@ fi
 
 echo -n "Testing for pwmchip7 (CP) ... "
 
-if [ ! -e /sys/class/pwm/pwmchip7/pwm0/enable ]; then
+if [ ! -e /sys/class/pwm/pwmchip7/ ]; then
 	echo -e "\e[31mFAILED"
 	echo -ne "\e[39m"
 else
@@ -169,6 +169,8 @@ fi
 
 echo -n "Testing for userspace GPIOs (qca7000) ... "
 
+test -e /sys/class/gpio/gpio81 || echo 81 > /sys/class/gpio/export
+
 if [ ! -e /sys/class/gpio/gpio81 ]; then
 	echo -e "\e[31mFAILED"
 	echo -ne "\e[39m"
@@ -181,7 +183,7 @@ echo -n "Testing for running eth1 ... "
 
 QCA="down"
 /sbin/ifconfig eth1 2>/dev/null | grep -q UP && QCA="up"
-test "$QCA" = "up" && /usr/local/bin/plctool -r -i eth1 | grep -q -e 'MAC-QCA7000' || QCA="down"
+test "$QCA" = "up" && /usr/bin/plctool -r -i eth1 | grep -q -e 'MAC-QCA7000' || QCA="down"
 
 if [ "$QCA" = "down" ]; then
 	echo -e "\e[31mFAILED"
@@ -195,7 +197,7 @@ echo -n "Testing for running eth2 ... "
 
 QCA="down"
 /sbin/ifconfig eth2 2>/dev/null | grep -q UP && QCA="up"
-test "$QCA" = "up" && /usr/local/bin/plctool -r -i eth2 | grep -q -e 'MAC-QCA7000' || QCA="down"
+test "$QCA" = "up" && /usr/bin/plctool -r -i eth2 | grep -q -e 'MAC-QCA7000' || QCA="down"
 
 if [ "$QCA" = "down" ]; then
 	echo -e "\e[31mFAILED"
@@ -246,21 +248,21 @@ fi
 
 echo -n "Testing for PWM fan ... "
 
-if [ ! -e /sys/class/hwmon/hwmon0/fan1_input ]; then
-	echo -e "\e[31mFAILED"
+if [ -e /sys/class/hwmon/hwmon0/fan1_input -o -e /sys/class/hwmon/hwmon1/fan1_input ]; then
+	echo -e "\e[32mOK"
 	echo -ne "\e[39m"
 else
-	echo -e "\e[32mOK"
+	echo -e "\e[31mFAILED"
 	echo -ne "\e[39m"
 fi
 
 echo -n "Testing for CPU thermal ... "
 
-if [ ! -e /sys/class/hwmon/hwmon1/temp1_input ]; then
-	echo -e "\e[31mFAILED"
+if [ -e /sys/class/hwmon/hwmon0/temp1_input -o -e /sys/class/hwmon/hwmon1/temp1_input ]; then
+	echo -e "\e[32mOK"
 	echo -ne "\e[39m"
 else
-	echo -e "\e[32mOK"
+	echo -e "\e[31mFAILED"
 	echo -ne "\e[39m"
 fi
 
