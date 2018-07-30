@@ -12,7 +12,7 @@ if [ "$ACTIVESLOT" = "A" ]; then
 	Description=Customer Application File System (A)
 	
 	[Mount]
-	What=/dev/mmcblk1p6
+	What=/dev/mmcblk0p6
 	Where=/opt
 	EOF
 else
@@ -21,7 +21,7 @@ else
 	Description=Customer Application File System (B)
 	
 	[Mount]
-	What=/dev/mmcblk1p7
+	What=/dev/mmcblk0p7
 	Where=/opt
 	EOF
 fi
