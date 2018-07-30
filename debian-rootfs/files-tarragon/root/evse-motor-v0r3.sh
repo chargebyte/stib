@@ -31,6 +31,7 @@ echo $POLARITY2 >/sys/class/gpio/$OUT2/active_low
 echo "0" >/sys/class/gpio/$OUT1/value;echo "0" >/sys/class/gpio/$OUT2/value
 
 # Wait for CAP charging
+echo "1" >/sys/class/gpio/$OUT1/value;echo "0" >/sys/class/gpio/$OUT2/value
 sleep 5
 
 if [ "$2" == "1" ]; then
