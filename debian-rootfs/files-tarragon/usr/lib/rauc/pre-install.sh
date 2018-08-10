@@ -6,7 +6,7 @@ case "$MODEL" in
 "I2SE EVAcharge SE")
         LED="evse:yellow:led1"
         ;;
-"I2SE Tarragon")
+"I2SE Tarragon"*)
         LED="evse:yellow:led2"
         ;;
 *)
