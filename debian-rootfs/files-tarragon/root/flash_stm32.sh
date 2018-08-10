@@ -14,12 +14,12 @@ test -e /sys/class/gpio/gpio$GPIO_BOOT0 || echo $GPIO_BOOT0 > /sys/class/gpio/ex
 test -e /sys/class/gpio/gpio$GPIO_RESET || echo $GPIO_RESET > /sys/class/gpio/export
 
 # config gpio as output
-echo "out" > /sys/class/gpio/gpio$GPIO_BOOT0/direction
-echo "out" > /sys/class/gpio/gpio$GPIO_RESET/direction
+echo out > /sys/class/gpio/gpio$GPIO_BOOT0/direction
+echo out > /sys/class/gpio/gpio$GPIO_RESET/direction
 
 # flash new firmware
-stm32flash -i "$GPIO_SEQUENCE" -e 0 -w "$FIRMWARE" "$SERIALPORT"
+stm32flash -i "$GPIO_SEQUENCE" -e 127 -w "$FIRMWARE" "$SERIALPORT"
 
 # workaround to restart flashed firmware (reset STM32)
 echo low > /sys/class/gpio/gpio$GPIO_RESET/direction
-echo input > /sys/class/gpio/gpio$GPIO_RESET/direction
+echo in > /sys/class/gpio/gpio$GPIO_RESET/direction
