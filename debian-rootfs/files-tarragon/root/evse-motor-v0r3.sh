@@ -9,38 +9,39 @@ function usage {
 
 test $# -ne 2 && usage
 
+# Init direction and polarity
+echo "out" >/sys/class/gpio/gpio71/direction
+echo "out" >/sys/class/gpio/gpio72/direction
+echo 1 >/sys/class/gpio/gpio71/active_low
+echo 0 >/sys/class/gpio/gpio72/active_low
+echo "out" >/sys/class/gpio/gpio73/direction
+echo "out" >/sys/class/gpio/gpio136/direction
+echo 0 >/sys/class/gpio/gpio73/active_low
+echo 0 >/sys/class/gpio/gpio136/active_low
+
 if [ "$1" != "2" ]; then
 OUT1=gpio71
 OUT2=gpio72
-POLARITY1=1
-POLARITY2=0
 else
 OUT1=gpio73
 OUT2=gpio136
-POLARITY1=0
-POLARITY2=0
 fi
-
-# Init direction and polarity
-echo "out" >/sys/class/gpio/$OUT1/direction
-echo "out" >/sys/class/gpio/$OUT2/direction
-echo $POLARITY1 >/sys/class/gpio/$OUT1/active_low
-echo $POLARITY2 >/sys/class/gpio/$OUT2/active_low
 
 # Stop
 echo "0" >/sys/class/gpio/$OUT1/value;echo "0" >/sys/class/gpio/$OUT2/value
 
-# Wait for CAP charging
+# Wait for CAP charging (always MOTOR1)
+echo "0" >/sys/class/gpio/gpio71/value;echo "0" >/sys/class/gpio/gpio72/value
 sleep 5
 
 if [ "$2" == "1" ]; then
-	# Reverse
+	# Closing ( = go reverse ) 
 	echo "0" >/sys/class/gpio/$OUT1/value;echo "1" >/sys/class/gpio/$OUT2/value
 	sleep 0.6
 	# Stop
 	echo "0" >/sys/class/gpio/$OUT1/value;echo "0" >/sys/class/gpio/$OUT2/value
 else
-	# Forward
+	# Open ( = go forward )
 	echo "1" >/sys/class/gpio/$OUT1/value;echo "0" >/sys/class/gpio/$OUT2/value
 	sleep 0.6
 	# Stop
