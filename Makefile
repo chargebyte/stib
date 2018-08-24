@@ -223,6 +223,8 @@ endif
 	sudo rm -rf rootfs/var/cache/apt/*
 
 clean-rootfs:
+	# ensure that proc is not mounted anymore from a previous run
+	-sudo umount rootfs/proc
 	sudo rm -rf rootfs rootfs-tmp
 
 images-clean clean-images:
