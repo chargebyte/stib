@@ -223,6 +223,8 @@ endif
 	sudo rm -rf rootfs/var/cache/apt/*
 
 clean-rootfs:
+	# ensure that proc is not mounted anymore from a previous run
+	-sudo umount rootfs/proc
 	sudo rm -rf rootfs rootfs-tmp
 
 images-clean clean-images:
@@ -303,7 +305,7 @@ mfgtool-image: images/mfgtool-$(PRODUCT).zip
 mrproper:
 	-make -C u-boot mrproper
 	-make -C linux mrproper
-	-make -C update-image clean
+	-make -C update clean
 
 .PHONY: distclean
 distclean: mrproper clean-rootfs rootfs-clean tools-clean
