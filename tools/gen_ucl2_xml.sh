@@ -52,6 +52,9 @@ cat <<EOL
     <CMD state="Updater" type="push" body="$ echo 0     > /sys/class/leds/*:green:*/brightness">Switch LED</CMD>
     -->
 
+    <CMD state="Updater" type="push" body="$ echo 0x2860 > /sys/fsl_otp/HW_OCOTP_CFG4">Burn HW_OCOTP_CFG4</CMD>
+    <CMD state="Updater" type="push" body="$ echo 0x0010 > /sys/fsl_otp/HW_OCOTP_CFG5">Burn HW_OCOTP_CFG5</CMD>
+
     <CMD state="Updater" type="push" body="mknod block,mmcblk0,/dev/mmcblk0,block">Creating Block Device for eMMC</CMD>
 EOL
 
