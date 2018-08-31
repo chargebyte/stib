@@ -5,4 +5,4 @@
 # that works even if disks are added and removed. See fstab(5).
 #
 # <file system> <mount point>   <type>  <options>       <dump>  <pass>
-/dev/root       /               ext4    noatime,errors=remount-ro 0       0
+/dev/root       /               ext4    noatime,data=journal,errors=remount-ro 0       0
