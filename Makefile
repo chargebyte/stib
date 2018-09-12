@@ -243,6 +243,7 @@ images/rootfs.img:
 	sudo umount $$(cat images/mountpoint)
 	sudo rmdir $$(cat images/mountpoint)
 	rm -f images/mountpoint
+	sudo tune2fs -o +journal_data images/rootfs.img
 
 images/sdcard.img: images/rootfs.img
 ifeq ($(PRODUCT),duckbill)
