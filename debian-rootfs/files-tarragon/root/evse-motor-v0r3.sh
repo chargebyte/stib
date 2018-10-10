@@ -27,25 +27,25 @@ OUT1=gpio73
 OUT2=gpio136
 fi
 
-# Stop
-echo "0" >/sys/class/gpio/$OUT1/value;echo "0" >/sys/class/gpio/$OUT2/value
+# Brake
+echo "1" >/sys/class/gpio/$OUT1/value;echo "1" >/sys/class/gpio/$OUT2/value
 
 # Wait for CAP charging (always MOTOR1)
-echo "0" >/sys/class/gpio/gpio71/value;echo "0" >/sys/class/gpio/gpio72/value
+echo "1" >/sys/class/gpio/gpio71/value;echo "1" >/sys/class/gpio/gpio72/value
 sleep 5
 
 if [ "$2" == "1" ]; then
 	# Closing ( = go reverse ) 
 	echo "0" >/sys/class/gpio/$OUT1/value;echo "1" >/sys/class/gpio/$OUT2/value
 	sleep 0.6
-	# Stop
-	echo "0" >/sys/class/gpio/$OUT1/value;echo "0" >/sys/class/gpio/$OUT2/value
+	# Brake
+	echo "1" >/sys/class/gpio/$OUT1/value;echo "1" >/sys/class/gpio/$OUT2/value
 else
 	# Open ( = go forward )
 	echo "1" >/sys/class/gpio/$OUT1/value;echo "0" >/sys/class/gpio/$OUT2/value
 	sleep 0.6
-	# Stop
-	echo "0" >/sys/class/gpio/$OUT1/value;echo "0" >/sys/class/gpio/$OUT2/value
+	# Brake
+	echo "1" >/sys/class/gpio/$OUT1/value;echo "1" >/sys/class/gpio/$OUT2/value
 fi
 
 sleep 1

@@ -28,7 +28,8 @@ do_mount()
 	fi
 
 	# Get info for this drive: $ID_FS_LABEL, $ID_FS_UUID, and $ID_FS_TYPE
-	eval $(/sbin/blkid -o udev ${DEVICE})
+	# M#2398: filter out ID_FS_PARTLABEL because of unquoted value in output of blkid
+	eval $(/sbin/blkid -o udev ${DEVICE} | /bin/grep -v ID_FS_PARTLABEL)
 
 	# skip if no filesystem is detected
 	if [ -z "${ID_FS_TYPE}" ]; then
