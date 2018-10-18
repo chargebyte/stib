@@ -2,10 +2,10 @@
 # Copyright (c) 2018 I2SE GmbH
 #
 
-include meta-inf.mk
 ifneq ($(PRODUCT),)
 -include meta-inf-$(PRODUCT).mk
 endif
+include meta-inf.mk
 
 # some internal variables
 customerfs_tarball_fn:=customerfs.tar.bz2
