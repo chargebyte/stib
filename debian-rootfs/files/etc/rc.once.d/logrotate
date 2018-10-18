@@ -1,0 +1,6 @@
+#!/bin/sh
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+test -f /etc/cron.daily/logrotate && mv /etc/cron.daily/logrotate /etc/cron.hourly
+
