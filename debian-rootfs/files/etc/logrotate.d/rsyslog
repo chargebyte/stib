@@ -1,5 +1,4 @@
 /var/log/syslog
-/var/log/daemon.log
 {
 	rotate 7
 	daily
@@ -9,7 +8,7 @@
 	delaycompress
 	compress
 	postrotate
-		systemctl kill -s HUP rsyslog.service > /dev/null
+		invoke-rc.d rsyslog rotate > /dev/null
 	endscript
 }
 
@@ -17,6 +16,7 @@
 /var/log/mail.warn
 /var/log/mail.err
 /var/log/mail.log
+/var/log/daemon.log
 /var/log/kern.log
 /var/log/auth.log
 /var/log/user.log
@@ -27,12 +27,13 @@
 {
 	rotate 4
 	weekly
+	maxsize 1M
 	missingok
 	notifempty
 	compress
 	delaycompress
 	sharedscripts
 	postrotate
-		systemctl kill -s HUP rsyslog.service > /dev/null
+		invoke-rc.d rsyslog rotate > /dev/null
 	endscript
 }
