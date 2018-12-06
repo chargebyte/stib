@@ -104,6 +104,7 @@ linux-clean:
 
 linux-menuconfig:
 	cat linux-configs/$(BL_BOARD) > linux/.config
+	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" olddefconfig
 	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" menuconfig
 	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" savedefconfig
 	cat linux/defconfig > linux-configs/$(BL_BOARD)
