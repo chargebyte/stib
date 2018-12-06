@@ -64,10 +64,16 @@ Since the linux kernel project size is around 1.2 GB, this can take a while; how
 do not delete this directory, this is only required once. Later, hoping between branches and
 pulling new changesets in, is really fast.
 
-After this, compile the required tools, U-Boot and linux kernel:
+After this, compile the required tools, U-Boot and linux kernel for Duckbill:
 
 ```
 $ make tools u-boot linux
+```
+
+In case of EVAcharge SE compile the tools, linux kernel and imx-bootlets:
+
+```
+$ make tools linux imx-bootlets
 ```
 
 Now it's time to create the basic Debian root filesystem with multistrap:
@@ -113,7 +119,8 @@ argument to the makefile on each invocation, e.g.
 $ make HWREV=v1 rootfs
 ```
 
-Valid hardware revisions are at the moment: `v1` and `v2`.
+Valid hardware revisions for Duckbill are at the moment: `v1` and `v2`. This
+parameter doesn't have any effect for EVAcharge SE.
 
 There are multiple product variants available. To select the variant your are building
 an image for, use `PRODUCT` command line argument, e.g.
@@ -122,7 +129,8 @@ an image for, use `PRODUCT` command line argument, e.g.
 $ make PRODUCT=duckbill-spi rootfs
 ```
 
-Valid products are: `duckbill`, `duckbill-spi`, `duckbill-enocean` and `duckbill-485`.
+Valid products are: `duckbill`, `duckbill-spi`, `duckbill-enocean`, `duckbill-485`
+and `evachargese`.
 
 You can also combine both variables, e.g.
 

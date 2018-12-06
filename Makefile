@@ -104,6 +104,7 @@ linux-clean:
 
 linux-menuconfig:
 	cat linux-configs/$(BL_BOARD) > linux/.config
+	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" olddefconfig
 	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" menuconfig
 	$(MAKE) -C linux ARCH=arm CROSS_COMPILE="$(CROSS_COMPILE)" savedefconfig
 	cat linux/defconfig > linux-configs/$(BL_BOARD)
@@ -221,6 +222,7 @@ images/sdcard.img: images/rootfs.img
 	sh tools/gen_sdcard_ext4.sh images/sdcard.img $(BOOTSTREAM) images/rootfs.img $$(($(ROOTFSSIZE) / (1024 * 1024)))
 	sh tools/fixup_fdt_file.sh tools/fw_env.config $(PRODUCT) $(HWREV)
 
+.PHONY: disk-image
 disk-image: images/sdcard.img
 	rm -f images/ucl.xml images/emmc.img.*
 	split -b $(ROOTFSCHUNKSIZE) --numeric-suffixes=1 images/sdcard.img images/emmc.img.
@@ -236,6 +238,6 @@ mrproper:
 	-make -C linux mrproper
 
 .PHONY: distclean
-distclean: mrproper clean-rootfs rootfs-clean tools-clean
+distclean: mrproper clean-rootfs rootfs-clean tools-clean programs-clean
 	rm -rf linux-modules
 	rm -rf images
