@@ -1,11 +1,10 @@
-/var/log/local0.log
+/srv/log/local0.log
 {
 	rotate 7
 	daily
 	maxsize 1M
 	missingok
 	notifempty
-	delaycompress
 	compress
 	postrotate
 		systemctl kill -s HUP rsyslog.service > /dev/null
