@@ -35,6 +35,9 @@ network configuration.
 | IPv4 address      | 255.255.255.0  |
 +-------------------+----------------+
 
+Note: In order to keep compatibility with older BSP the CP interface is renamed
+during boot from eth1 to qca0.
+
 For a detailed description of all possible settings, please refer to the
 `Debian network documentation`_.
 
@@ -46,7 +49,7 @@ The following list mentions only some features a Linux system is capable of:
 * IPv6
 * Unix domain sockets
 * TCP / UDP
-* VLAN, DHCP, Ethernet Bridging ( requires additional configuration )
+* VLAN, DHCP, :ref:`ethernet-bridging` ( requires additional configuration )
 
 .. rubric:: Footnotes
 
