@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# skip in case we ship with a fixed file
+[ -e /etc/baptism-data.config ] && exit 0
+
+# try to use faster blockdev
+boot_partition_size="$(blockdev --getsize64 /dev/mmcblk0boot0 2> /dev/null)"
+
+# in case blockdev not available, try slower wc -c
+if [ -z "$boot_partition_size" ]; then
+	boot_partition_size="$(wc -c /dev/mmcblk0boot0 | cut -d' ' -f1)"
+fi
+
+# store baptism data 128 kB from end
+baptism_data_offset="$(printf "0x%08x" $((boot_partition_size - 128 * 1024)))"
+
+# create config
+cat <<EOF > /etc/baptism-data.config
+# during device baptism process, several key=value pairs are stored for each
+# device; use fw_printenv -c <thisfile> or similar to retrieve these values
+/dev/mmcblk0boot0 ${baptism_data_offset} 0x20000
+/dev/mmcblk0boot1 ${baptism_data_offset} 0x20000
+EOF
+
+exit 0
