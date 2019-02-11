@@ -1,0 +1,9 @@
+[Unit]
+Description=Create Baptism Data Configuration file
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/create-baptism-data-config
+
+[Install]
+WantedBy=multi-user.target
