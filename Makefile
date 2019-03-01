@@ -12,7 +12,7 @@ KERNEL_CFG := evachargese
 PRODUCT_COMMON :=
 PLATFORM := armel
 MFGTOOL_PATH := mfgtool-$(PRODUCT)
-UBOOTENVTARGET := envtools
+UBOOTENVTARGET := env
 
 else ifeq ($(PRODUCT),tarragon)
 CROSS_COMPILE := arm-linux-gnueabihf-
