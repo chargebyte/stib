@@ -244,6 +244,7 @@ images/rootfs.img:
 	sudo rmdir $$(cat images/mountpoint)
 	rm -f images/mountpoint
 	sudo tune2fs -o +journal_data images/rootfs.img
+	sudo fsck.ext4 -f images/rootfs.img
 
 images/sdcard.img: images/rootfs.img
 ifeq ($(PRODUCT),duckbill)
