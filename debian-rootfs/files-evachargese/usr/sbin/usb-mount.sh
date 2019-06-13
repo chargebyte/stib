@@ -96,7 +96,7 @@ run_customer_scripts()
 	ACTION=$1
 
 	if [ -d "/etc/usb-mount.d" ]; then
-		/bin/run-parts --lsbsysinit -a "$ACTION" -a "${MOUNT_POINT}" -- "/etc/usb-mount.d"
+		/bin/run-parts -a "$ACTION" -a "${MOUNT_POINT}" -- "/etc/usb-mount.d"
 	fi
 }
 
