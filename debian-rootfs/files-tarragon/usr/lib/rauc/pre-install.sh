@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MODEL=$(cat /proc/device-tree/model)
+MODEL=$(tr -d '\0' < /proc/device-tree/model)
 
 case "$MODEL" in
 "I2SE EVAcharge SE")
