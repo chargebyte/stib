@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 led_set_attr() {
 	local led="$1"
