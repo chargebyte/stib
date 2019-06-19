@@ -11,11 +11,16 @@ BUNDLE_MOUNT_POINT="$3"
 if [ "$SLOT_CLASS" = "rootfs" ]; then
 	( xargs tar -c --ignore-failed-read -C / ) <<-EOF | tar -x -C "$SLOT_MOUNT_POINT"
 	/etc/hostname
-	/etc/resolv.conf
 	/etc/hosts
 	/etc/network/interfaces
 	/etc/ssh
 	/root/.ssh
 	/etc/rc.once.d/.done
 	EOF
+
+	# copy /etc/resolv.conf only if it is a plain file and not a link
+	if [ -f /etc/resolv.conf -a ! -L /etc/resolv.conf ]; then
+		rm -f "$SLOT_MOUNT_POINT/etc/resolv.conf"
+		cat /etc/resolv.conf > "$SLOT_MOUNT_POINT/etc/resolv.conf"
+	fi
 fi
