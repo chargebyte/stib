@@ -13,7 +13,7 @@ if [ "$SLOT_CLASS" = "rootfs" ]; then
 	/etc/hostname
 	/etc/hosts
 	/etc/network/interfaces
-	/etc/ssh
+	/etc/ssh/*_key*
 	/root/.ssh
 	/etc/rc.once.d/.done
 	EOF
