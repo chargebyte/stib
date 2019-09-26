@@ -21,11 +21,11 @@ filename=hooks.sh
 
 [image.rootfs]
 filename=rootfs.ext4
-hooks=pre-install;post-install
+hooks=post-install
 
 [image.customerfs]
 filename=$(customerfs_tarball_fn)
-hooks=pre-install;post-install
+hooks=post-install
 endef
 
 all: publish/$(updatefile_filename)
