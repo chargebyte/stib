@@ -7,24 +7,24 @@ LATEDIR="$3"
 ACTIVESLOT="$(sed 's/.*rauc\.slot=\([AB]\).*/\1/' /proc/cmdline)"
 
 if [ "$ACTIVESLOT" = "A" ]; then
-	cat <<-EOF > "$NORMALDIR/var-log.mount"
+	cat <<-EOF > "$NORMALDIR/opt.mount"
 	[Unit]
-	Description=Log File System (A)
+	Description=Customer Application File System (A)
 	
 	[Mount]
 	What=/dev/mmcblk0p6
-	Where=/var-log
+	Where=/opt
 	EOF
 else
-	cat <<-EOF > "$NORMALDIR/var-log.mount"
+	cat <<-EOF > "$NORMALDIR/opt.mount"
 	[Unit]
-	Description=Log File System (B)
+	Description=Customer Application File System (B)
 	
 	[Mount]
 	What=/dev/mmcblk0p7
-	Where=/var-log
+	Where=/opt
 	EOF
 fi
 
 mkdir -p "$NORMALDIR/sysinit.target.wants"
-ln -s ../var-log.mount "$NORMALDIR/sysinit.target.wants"
+ln -s ../opt.mount "$NORMALDIR/sysinit.target.wants"
