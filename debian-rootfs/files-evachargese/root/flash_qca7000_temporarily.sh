@@ -1,8 +1,8 @@
 #!/bin/sh
 
-BL=/root/NvmSoftloader-QCA7000-v1.1.0-01-FINAL.nvm
+BL=/root/NvmSoftloader-7000-v1.2.5-00-CS.nvm
 PIB=/root/QCA7000-SpiSlave-HomePlugGP_CE-ClassB-minus67db.pib
-FW=/root/MAC-QCA7000-v1.1.0-01-X-FINAL.nvm
+FW=/root/MAC-7000-v1.2.5-00-CS.nvm
 
 if [ "$1" = "-f" ]; then
 	/usr/local/bin/plcwait -R -i qca0
