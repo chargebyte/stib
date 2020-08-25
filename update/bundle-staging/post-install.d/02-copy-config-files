@@ -12,6 +12,7 @@ if [ "$SLOT_CLASS" = "rootfs" ]; then
 	( xargs tar -c --ignore-failed-read -C / ) <<-EOF | tar -x -C "$SLOT_MOUNT_POINT"
 	/etc/hostname
 	/etc/hosts
+	/etc/machine-id
 	/etc/network/interfaces
 	/etc/ssh/ssh_host_ecdsa_key
 	/etc/ssh/ssh_host_ecdsa_key.pub

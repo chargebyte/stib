@@ -20,5 +20,8 @@ mount proc -t proc /proc
 dpkg --configure -a
 
 # default password
-                          
 sed -i -e 's/root:\*:/root:$6$JrFWa6qL$Rthf9\/1SpixCHEHtqBxaGXX3WBEVgPzuMra7P7BxJtnbYo.C.qLsoenVK9iL1ta853zNwhBPZeYNK8BqW\/zzT.:/' /etc/shadow
+
+# empty machine-id
+: > /etc/machine-id
+chmod 444 /etc/machine-id

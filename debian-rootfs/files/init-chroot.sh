@@ -21,3 +21,7 @@ dpkg --configure -a
 
 # default password
 sed -i -e 's/root:\*:/root:$6$lNi.e6W6$\/SjquwHRplrFOO6Ugi8f.MBR8jli0ZpkXkCTxTSmpXvwecbDy6DhDfBM9NfKWLTke2I.BUJijQR38b\/XMyu0S\/:/' /etc/shadow
+
+# empty machine-id
+: > /etc/machine-id
+chmod 444 /etc/machine-id
