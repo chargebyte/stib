@@ -1,0 +1,15 @@
+#!/bin/sh
+
+[ -n "$1" ] || {
+	echo "Usage: $0 <mountpoint>"
+	echo
+	echo "Determines the inactive rootfs partition and mounts it to <mountpoint>."
+
+	exit 1
+} >&2
+
+. /lib/rauc-helper.sh
+
+device=$(rauc_get_other_rootfs_device)
+
+mount "$device" "$1"
