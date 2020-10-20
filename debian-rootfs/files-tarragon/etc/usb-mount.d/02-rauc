@@ -31,6 +31,8 @@ if [ "$ACTION" = "add" ]; then
 
 		# loop through images in the bundle and determine whether it looks like this
 		# is the bundle we are already running from
+		RAUC_rootfs_DIGEST=""
+		RAUC_customerfs_DIGEST=""
 		for y in $(seq 0 $((RAUC_MF_IMAGES - 1))); do
 			eval RAUC_IMAGE_CLASS=\$RAUC_IMAGE_CLASS_${y}
 			eval RAUC_${RAUC_IMAGE_CLASS}_DIGEST=\$RAUC_IMAGE_DIGEST_${y}
