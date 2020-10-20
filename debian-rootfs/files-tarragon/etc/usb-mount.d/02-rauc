@@ -12,7 +12,7 @@ if [ "$ACTION" = "add" ]; then
 	# if we are running a system which was updated with rauc, we
 	# can obtain sha256 sums from slot status files
 	ROOTFS_DIGEST=$(awk -F "=" ' /^sha256/ {print $2}' /slot.raucs 2>/dev/null)
-	CUSTOMERFS_DIGEST=$(awk -F "=" ' /^sha256/ {print $2}' /opt/slot.raucs 2>/dev/null)
+	CUSTOMERFS_DIGEST=$(awk -F "=" ' /^sha256/ {print $2}' /var/log/slot.raucs 2>/dev/null)
 
 	for BUNDLE in "$MOUNTPOINT"/*.image; do
 		# nullglob not available in every shell, so check for empty match
