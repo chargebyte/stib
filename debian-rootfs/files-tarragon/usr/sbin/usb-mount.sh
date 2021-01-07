@@ -56,7 +56,7 @@ do_mount()
 
 	# File system type specific mount options
 	if [ ${ID_FS_TYPE} = "vfat" ]; then
-		OPTS+=",users,gid=100,umask=000,shortname=mixed,utf8=1,flush"
+		OPTS+=",fmask=0022,utf8=1"
 	fi
 
 	if ! /bin/mount -o ${OPTS} ${DEVICE} ${MOUNT_POINT}; then
