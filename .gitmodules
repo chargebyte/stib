@@ -6,10 +6,10 @@
 	url = https://github.com/mhei/u-boot.git
 [submodule "linux"]
 	path = linux
-	url = https://github.com/I2SE/linux.git
+	url = https://github.com/chargebyte/linux.git
 [submodule "imx-bootlets"]
 	path = imx-bootlets
-	url = https://github.com/I2SE/imx-bootlets.git
+	url = https://github.com/chargebyte/imx-bootlets.git
 	ignore = dirty
 [submodule "tools/elftosb"]
 	path = tools/elftosb
